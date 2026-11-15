@@ -191,7 +191,14 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
       } else {
         $('doneH').innerHTML='Almost done: pay to confirm order <span class="oid">'+oid+'</span>.';
         $('hold').innerHTML='<b>Your order is on hold until your payment comes in.</b> Send <b>'+money(o.total)+'</b> on Venmo to <b>@'+esc(u)+'</b> with <b>'+oid+'</b> in the note. We do not start without it, and unpaid orders are canceled after 2 days.';
-        $('doneActs').innerHTML='<a class="btn" target="_blank" rel="noopener" href="'+vurl+'">Pay '+money(o.total)+' on Venmo</a>';
+        $('doneActs').innerHTML='<a class="btn" target="_blank" rel="noopener" href="'+vurl+'">1. Pay '+money(o.total)+' on Venmo</a><button type="button" class="btn ghost" id="paidBtn">2. I paid</button><p class="hint" id="paidMsg" role="status" style="flex-basis:100%;margin:4px 0 0">After you pay on Venmo, come back and tap <b>I paid</b> so we know to check.</p>';
+        $('paidBtn').onclick=function(){ var pb=$('paidBtn'); pb.disabled=true; pb.textContent='Sending…';
+          fetch('https://formsubmit.co/ajax/'+SHOP.orderEmail,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+            body:JSON.stringify({_subject:'Customer says PAID: '+oid+' for '+o.forName+' ('+money(o.total)+') - check Venmo', _template:'box', _captcha:'false', _replyto:o.email, Order:oid, Amount:money(o.total), Name:o.name, Email:o.email, Note:'The customer tapped I paid. Check your Venmo app for '+money(o.total)+' with '+oid+' in the note before starting.'})})
+          .then(function(r){return r.json();}).then(function(j){ if(String(j.success)!=='true') throw 0;
+            pb.textContent='Thanks!'; $('hold').innerHTML='<b>Thanks! We got your note that you paid.</b> We will check Venmo and email you at '+esc(o.email)+' when your order is confirmed. Usually within a few hours.';
+            $('paidMsg').textContent='Did not actually pay yet? Use the Venmo button above. We only start once the payment shows up.'; })
+          .catch(function(){ pb.disabled=false; pb.textContent='2. I paid'; $('paidMsg').textContent='That did not go through. Check your internet and tap I paid again.'; }); };
         $('step1').innerHTML='<b>We see your payment.</b>We match it by the order number in your Venmo note, then email you that your order is confirmed.';
       }
       $('done').focus(); window.scrollTo(0,0);
