@@ -82,6 +82,7 @@ textarea{min-height:76px;resize:vertical}
 .c{background:#fff;border:1.5px solid #dccdb2;border-radius:7px;min-height:46px;padding:3px 5px;font-weight:800;font-size:13px;overflow:hidden}
 .c small{display:block;font-size:9.5px;line-height:1.1;font-weight:700;color:#8a4a00}
 .c.on{background:#ffe7c4;border-color:var(--orange)} .c.no{background:transparent;border-color:transparent}
+.ah{font-family:var(--display);font-weight:400;font-size:24px;margin:0 0 10px;color:#24122e}.olist{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:15px}.olist dt{font-weight:800;color:#6a557a}.olist dd{margin:0}.ototal{display:flex;justify-content:space-between;align-items:baseline;border-top:2px dashed #d9c8b0;margin-top:12px;padding-top:10px;font-weight:800}.ototal b{font-family:var(--display);font-weight:400;font-size:34px;color:#e86f00}.next{margin:0;padding-left:20px;display:grid;gap:8px;font-size:15px}.next b{display:block}.steps3{display:grid;gap:14px;margin-top:6px}.step3{border-radius:16px;background:rgba(255,255,255,.06);padding:14px 16px}.step3 h4{margin:0 0 6px;font-size:17px}.step3 .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--orange);color:#2a1300;font-weight:900;margin-right:8px}.oid{font-weight:900;color:var(--orange)}
 .pnote{font-size:13px;color:#6a557a;margin:8px 2px 0}
 .sum{background:var(--plum);border:2px solid var(--orange);border-radius:18px;padding:18px}
 .total{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:18px}
@@ -169,7 +170,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   <figure><img src="img/dec.jpg" alt="Printed December calendar page with a snowy cabin, Christmas tree and owl banner" loading="lazy" width="1400" height="1066"><figcaption>Front · December</figcaption></figure>
   <figure><img src="img/back.jpg" alt="Back of the November page with a QR code and what-to-do notes for each week" loading="lazy" width="1400" height="1027"><figcaption>Back · QR codes and what to do</figcaption></figure>
 </div></section>
-<section id="build"><h2>Build your calendar</h2><p class="lede" style="margin:0">The preview updates as you fill this in.</p>
+<section id="build"><h2>Build your calendar</h2><p class="lede" style="margin:0">Answer five quick questions. We design your calendar after you order.</p>
 <div class="build">
   <form id="f" novalidate>
     <fieldset><legend>1. Who is it for, and which months?</legend>
@@ -202,7 +203,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     </fieldset>
     <fieldset><legend>4. How do you want to get it?</legend>
       <div class="cards">
-        <label class="card"><input type="radio" name="del" id="delPickup" value="pickup" checked><b>Local pickup or drop-off</b><span>Free, for people nearby. You email us the order and pay when you get it.</span></label>
+        <label class="card"><input type="radio" name="del" id="delPickup" value="pickup" checked><b>Local pickup or drop-off</b><span>Free, for people nearby. Pay on Venmo or with cash when you get it.</span></label>
         <label class="card"><input type="radio" name="del" id="delMail" value="mail"><b>Mailed in the US</b><span>Shipping is extra. We tell you the cost before you pay.</span></label>
       </div>
       <div id="addrBox" hidden><label for="addr">Mailing address</label><textarea id="addr" autocomplete="street-address"></textarea></div>
@@ -213,23 +214,31 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     </fieldset>
     <div class="sum">
       <div class="total"><span id="sumLine"></span><b id="total">$5.00</b></div><p class="hint" id="dealHint" style="margin:6px 0 0;color:var(--orange)"></p>
-      <div class="acts"><button type="submit" class="btn" id="finish">Finish my order</button><span id="payWrap"></span></div>
+      <div class="acts"><button type="submit" class="btn" id="finish">Finish my order</button></div>
       <p id="msg" role="status"></p>
-      <p class="hint" id="payHint"></p>
     </div>
     <div class="sum" id="send" hidden tabindex="-1">
-      <h3 id="sendTitle">Email us your order</h3>
-      <p id="sendText"></p>
-      <div class="acts" id="sendActs"></div>
-      <p id="copyMsg" role="status" class="hint"></p>
-      <textarea id="orderText" readonly aria-label="Your order"></textarea>
+      <h3 id="sendTitle">Almost done</h3>
+      <p id="sendText" class="hint"></p>
+      <div class="steps3">
+        <div class="step3"><h4><span class="n">1</span>Send us your order</h4><p class="hint" id="s1"></p><div class="acts" id="sendActs"></div><p id="copyMsg" role="status" class="hint"></p></div>
+        <div class="step3"><h4><span class="n">2</span>Pay</h4><p class="hint" id="s2"></p><div class="acts" id="payActs"></div></div>
+        <div class="step3"><h4><span class="n">3</span>We make it</h4><p class="hint">When your email and payment come in, we design your calendar and send you a picture to check before we print. Questions? Email <b id="mailShow"></b>.</p></div>
+      </div>
+      <details style="margin-top:12px"><summary class="hint">See the order text</summary><textarea id="orderText" readonly aria-label="Your order"></textarea></details>
     </div>
   </form>
-  <aside class="preview" aria-label="Calendar preview">
-    <div class="stage" id="pstage"></div>
-    <div class="chips" id="ptabs" role="group" aria-label="Month to preview"></div><div class="ptitle"><b id="pName">Their name</b><span id="pMonth"></span></div>
-    <div class="grid" id="pgrid"></div>
-    <p class="pnote" id="pnote"></p>
+  <aside class="preview" aria-label="Your order">
+    <h3 class="ah">Your order</h3>
+    <dl class="olist" id="olist"></dl>
+    <div class="ototal"><span>Total</span><b id="ototal">$5.00</b></div>
+    <h3 class="ah" style="margin-top:20px">What happens next</h3>
+    <ol class="next">
+      <li><b>You send the order.</b> One tap opens your email with everything filled in.</li>
+      <li><b>You pay.</b> Venmo, or cash at pickup. Mailed orders get the shipping total first.</li>
+      <li><b>We design it.</b> New scenes and fun days made just for you. We send a picture to check before printing.</li>
+      <li><b>Printed and laminated.</b> Picked up, dropped off, or mailed.</li>
+    </ol>
   </aside>
 </div>
 </section>
@@ -513,7 +522,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 <script>
 (function(){
   /* ---- shop settings: fill these in when they exist ---- */
-  var SHOP = { stripe: '', venmo: 'Jakedouglas', orderEmail: 'cheetspress@gmail.com' };
+  var SHOP = { stripe: '', venmo: 'jake-douglas-44', orderEmail: 'cheetspress@gmail.com' };
 
   var $ = function(i){ return document.getElementById(i); };
   var SCENES = ['Autumn oaks and zoomies','Golden hour turkeys','Sunset hawk over the river','Frosty morning deer','Otter under the stars','Snowy solstice','Full moon, owl and cabin','Fireworks and a fox'];
@@ -562,32 +571,14 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   }
   function drawPreview(force){
     var P=picked(); if(!months[st.act].on) { st.act=months.indexOf(P[0]); st.week=0; }
-    var c=months[st.act], n=nd(c), first=new Date(c.y,c.m,1).getDay(), W=Math.ceil(n/7); if(st.week>=W) st.week=0;
-    var marks={}; if(funOn()){ for(var k in FUN) marks[k]=FUN[k]; }
-    if(useDates()) st.dates.forEach(function(x){ if(x.mi===st.act && x.d) marks[x.d]=x.t.trim()||'Your day'; });
-    $('ptabs').innerHTML = P.length>1 ? P.map(function(x){ var i=months.indexOf(x); return '<button type="button" class="chip" data-i="'+i+'" aria-pressed="'+(i===st.act)+'">'+MON[x.m].slice(0,3)+'</button>'; }).join('') : '';
-    var h=''; for(var r=0;r<W;r++){ h+='<button type="button" class="wk" data-r="'+r+'" aria-pressed="'+(r===st.week)+'" aria-label="Show week '+(r+1)+'">';
-      for(var j=0;j<7;j++){ var day=r*7+j+1; if(day>n){ h+='<span class="c no"></span>'; continue; }
-        h+='<span class="c'+(marks[day]?' on':'')+'">'+DOW[(first+j)%7]+' '+day+(marks[day]?'<small>'+esc(marks[day])+'</small>':'')+'</span>'; }
-      h+='</button>'; }
-    $('pgrid').innerHTML=h;
-    var key=autoScene(c,st.week);
-    $('pName').textContent=$('forName').value.trim()||'Their name'; $('pMonth').textContent=label(c)+' · week '+(st.week+1);
-    if(force||key!==shown){ shown=key; $('pstage').innerHTML=CAL.scene(key,{par:'xMidYMid slice',uid:'p'}); }
-    $('pnote').textContent = (describing() ? 'Your months get designed around what you describe. This picture is a stand-in. ' : 'Example scenes and fun days. Yours get made fresh. ') + 'Tap a week to see its scene.';
+    var ds = useDates()? st.dates.filter(function(x){return x.d && months[x.mi].on;}).length : 0;
+    var rows=[['For',$('forName').value.trim()||'—'],['Months',P.length===12?'Full year ('+label(P[0])+' to '+label(P[11])+')':P.map(label).join(', ')],['Design',describing()?'You describe them':'We make them'],['Special days',useDates()?(ds?ds+(ds===1?' date':' dates'):'add them on the left'):'Surprise me'],['Delivery',$('delMail').checked?'Mailed (shipping extra)':'Pickup or drop-off']];
+    $('olist').innerHTML=rows.map(function(r){return '<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>';}).join('');
     st.total=price(P.length);
     $('sumLine').textContent = (P.length===12?'Full year, 12 months':P.length+(P.length===1?' month':' months'))+(describing()?', described':'');
     $('dealHint').textContent = dealHint(P.length);
-    $('total').textContent = money(st.total);
+    $('total').textContent = money(st.total); $('ototal').textContent = money(st.total)+($('delMail').checked?' + shipping':'');
     $('descBox').hidden=!describing(); $('datesBox').hidden=!useDates(); $('addrBox').hidden=!$('delMail').checked;
-    if(SHOP.venmo){
-      var u=SHOP.venmo.replace(/^@/,''), amt=st.total.toFixed(2), mail=$('delMail').checked;
-      $('payWrap').innerHTML='<a class="btn" target="_blank" rel="noopener" href="https://venmo.com/'+encodeURIComponent(u)+'?txn=pay&amount='+amt+'&note='+encodeURIComponent("Cheet's Press calendar")+'&audience=private">Pay '+money(st.total)+' with Venmo (@'+esc(u)+')</a>';
-      $('payHint').textContent = mail ? 'Mailing a calendar? Email us the order first. We write back with the shipping cost, then you pay the full amount.' : 'Email us your order first, then pay here. Or pay when you pick it up. If Venmo asks, choose goods and services.';
-    } else {
-      $('payWrap').innerHTML = SHOP.stripe ? '' : '<span class="btn off" aria-disabled="true">Card payments open soon</span>';
-      $('payHint').textContent = SHOP.stripe ? '' : 'Online card payment is being set up. For now you pay when you get your calendar.';
-    }
   }
   function all(){ drawChips(); drawMonths(); drawDates(); drawPreview(true); }
 
@@ -604,8 +595,6 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     drawPreview(); });
   $('dates').addEventListener('click', function(e){ var x=e.target.closest('.x'); if(!x) return; st.dates.splice(+x.dataset.j,1); if(!st.dates.length) st.dates.push({mi:st.act,d:'',t:''}); drawDates(); drawPreview(); });
   $('addDate').addEventListener('click', function(){ st.dates.push({mi:st.act,d:'',t:''}); drawDates(); $('dd'+(st.dates.length-1)).focus(); });
-  $('pgrid').addEventListener('click', function(e){ var b=e.target.closest('.wk'); if(b){ st.week=+b.dataset.r; drawPreview(); } });
-  $('ptabs').addEventListener('click', function(e){ var b=e.target.closest('.chip'); if(b){ st.act=+b.dataset.i; st.week=0; drawPreview(); } });
 
   function orderText(){
     var P=picked(), L=["CHEET'S PRESS ORDER", 'Calendar for: '+$('forName').value.trim(),
@@ -625,15 +614,20 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     if($('delMail').checked && !$('addr').value.trim()) miss.push('a mailing address');
     if(miss.length){ m.className='bad'; m.textContent='Still needed: '+miss.join(', ')+'.'; $('send').hidden=true; return; }
     m.className=''; m.textContent='';
-    var t=orderText(), local=$('delPickup').checked; $('orderText').value=t; $('copyMsg').textContent='';
-    if(SHOP.orderEmail){
-      $('sendTitle').textContent='Last step: email us your order';
-      $('sendText').innerHTML='Send the order below to <b>'+esc(SHOP.orderEmail)+'</b>. '+(local?'We will write back to set up pickup or drop-off, and you pay when you get it.':'We will write back with the shipping cost before you pay.')+' Your order is not placed until we get your email.';
-      $('sendActs').innerHTML='<a class="btn" href="mailto:'+esc(SHOP.orderEmail)+'?subject='+encodeURIComponent("Cheet's Press order for "+$('forName').value.trim())+'&body='+encodeURIComponent(t)+'">Open my email app</a><button type="button" class="btn ghost" id="copyBtn">Copy the order</button>';
+    var oid='CP-'+String(Math.floor(1000+Math.random()*9000)), local=$('delPickup').checked, who=$('forName').value.trim(), t='Order '+oid+'\n'+orderText();
+    $('orderText').value=t; $('copyMsg').textContent=''; $('mailShow').textContent=SHOP.orderEmail;
+    $('sendTitle').innerHTML='Almost done. Your order number is <span class="oid">'+oid+'</span>';
+    $('sendText').textContent='Your order is not placed until we get your email.';
+    $('s1').textContent='Tap the button to open your email with the order filled in, then hit send. No email app? Copy the order and send it to '+SHOP.orderEmail+'.';
+    $('sendActs').innerHTML='<a class="btn" id="mailBtn" href="mailto:'+esc(SHOP.orderEmail)+'?subject='+encodeURIComponent("Cheet's Press order "+oid+" for "+who)+'&body='+encodeURIComponent(t)+'">Email my order</a><button type="button" class="btn ghost" id="copyBtn">Copy the order</button>';
+    var u=(SHOP.venmo||'').replace(/^@/,'');
+    if(!u){ $('s2').textContent='You pay when you get your calendar.'; $('payActs').innerHTML=''; }
+    else if(local){
+      $('s2').innerHTML='Pay <b>'+money(st.total)+'</b> on Venmo to <b>@'+esc(u)+'</b> with your order number in the note, or pay with cash when you pick it up.';
+      $('payActs').innerHTML='<a class="btn" id="venmoBtn" target="_blank" rel="noopener" href="https://venmo.com/'+encodeURIComponent(u)+'?txn=pay&amount='+st.total.toFixed(2)+'&note='+encodeURIComponent("Cheet's Press "+oid)+'">Pay '+money(st.total)+' on Venmo</a>';
     } else {
-      $('sendTitle').textContent='Your order is written up';
-      $('sendText').textContent='Online ordering is still being set up, so this order has not been sent anywhere yet. Copy it and send it to Cheet\'s Press to place it.';
-      $('sendActs').innerHTML='<button type="button" class="btn" id="copyBtn">Copy the order</button>';
+      $('s2').innerHTML='Mailed orders pay after we reply with the shipping cost. We send you the full total and a Venmo link to <b>@'+esc(u)+'</b>.';
+      $('payActs').innerHTML='';
     }
     $('send').hidden=false; $('send').focus(); $('send').scrollIntoView({block:'start'});
   });
