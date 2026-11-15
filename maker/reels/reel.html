@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Cheet's Press Reel</title>
+<!-- Source for the Instagram Reels in /media. Open /maker/reels/reel.html?r=1 (or 2, 3) to watch one,
+     or run render.py to make the mp4 files. Every moving part is a CSS or SVG animation,
+     so render.py can step through it one exact frame at a time (no dropped frames). -->
+<style id="base">
+@font-face{font-family:"Bowlby One";src:url(/fonts/bowlby-one.woff2) format("woff2");font-weight:400}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-600.woff2) format("woff2");font-weight:600}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-800.woff2) format("woff2");font-weight:800 900}
+html,body{margin:0;background:#000}
+#stage{position:relative;width:540px;height:960px;overflow:hidden;background:#1c0e33;font-family:"Figtree",system-ui,sans-serif;color:#fbf4ff}
+.layer{position:absolute;inset:0;opacity:0}
+.layer .zoom{position:absolute;inset:0;transform-origin:50% 60%}
+.layer svg.scene{position:absolute;inset:0;width:100%;height:100%;display:block}
+.shade{position:absolute;left:0;right:0;top:0;height:300px;background:linear-gradient(#0008,#0000)}
+.shade.b{top:auto;bottom:0;height:340px;background:linear-gradient(#0000,#000a)}
+.cap{position:absolute;left:34px;right:34px;opacity:0}
+.cap.top{top:70px}.cap.bottom{bottom:150px}
+.cap h1{margin:0;font:400 46px/1.02 "Bowlby One","Arial Black",sans-serif;letter-spacing:.2px;color:#fff;text-shadow:0 3px 0 #0004,0 0 24px #0006}
+.cap h1 em{font-style:normal;color:#ff8a1f}
+.cap p{margin:12px 0 0;font:800 21px/1.3 "Figtree",sans-serif;color:#fff;text-shadow:0 2px 10px #000a;max-width:400px}
+.dark{background:radial-gradient(120% 80% at 50% 45%,#3a1d6e 0%,#1c0e33 60%,#150a27 100%)}
+.cal{position:absolute;left:50%;top:330px;width:440px;margin-left:-220px;border-radius:10px;box-shadow:0 26px 60px #000a;opacity:0}
+.cal img,.phone img{display:block;width:100%}
+.phone{position:absolute;left:50%;top:300px;width:300px;height:560px;margin-left:-150px;border-radius:38px;background:#0d0718;border:8px solid #0d0718;box-shadow:0 0 0 2px #5b3d93,0 30px 70px #000b;overflow:hidden;opacity:0}
+.phone .pg{position:absolute;left:0;top:0;width:1130px}
+.phone .beam{position:absolute;left:10px;right:10px;top:0;height:5px;border-radius:5px;background:#3dff8a;box-shadow:0 0 18px 4px #3dff8a}
+.bar{position:absolute;left:34px;right:34px;top:40px;height:5px;border-radius:5px;background:#fff5;opacity:0;overflow:hidden}
+.bar i{display:block;height:100%;width:100%;background:#ff8a1f;transform-origin:0 50%;transform:scaleX(0)}
+.end{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0}
+.end .paw{width:74px;height:74px;margin-bottom:18px}
+.end .logo{font:400 56px/1 "Bowlby One","Arial Black",sans-serif;color:#fff}.end .logo b{font-weight:400;color:#ff8a1f}
+.end .l1{margin-top:22px;font:800 27px/1.25 "Figtree",sans-serif;color:#fff}
+.end .l2{margin-top:10px;font:600 22px/1.3 "Figtree",sans-serif;color:#d9c9f5}
+.end .btn{margin-top:26px;font:800 27px/1 "Figtree",sans-serif;color:#2a1300;background:#ff8a1f;padding:16px 30px;border-radius:999px;box-shadow:0 6px 0 #a24c00}
+.end .code{margin-top:26px;font:800 22px/1.3 "Figtree",sans-serif;color:#fff;border:2px dashed #ff8a1f;border-radius:14px;padding:10px 18px}
+.end .code b{color:#ff8a1f}
+.end>*{opacity:0}
+</style>
+<style id="scenecss"></style>
+<style id="tl"></style>
+</head><body>
+<div id="stage"></div>
+<script src="/src/scenes.js"></script>
+<script>
+(function(){
+  /* x = left edge (0 to 1094) of the 506-wide slice of the 1600-wide scene that fits a tall phone screen */
+  var X = [330, 700, 760, 560, 620, 520, 250, 430];
+  var REELS = {
+    1: { dur: 17.5, segs: [
+      { t0: 0,    t1: 3.2,  kind: 'cal',   cap: ['This is a', 'calendar.'], sub: 'Made just for you, then printed and laminated.' },
+      { t0: 3.2,  t1: 7.4,  kind: 'phone', cap: ['Scan the code', 'on the back…'] },
+      { t0: 7.4,  t1: 11.0, kind: 'scene', idx: 6, cap: ['…and that week', 'starts moving.'] },
+      { t0: 11.0, t1: 14.2, kind: 'scene', idx: 0, cap: ['Every week has', 'its own animation.'], pos: 'bottom' },
+      { t0: 14.2, t1: 17.5, kind: 'end' } ] },
+    2: { dur: 19.5, bar: [0, 16], segs: [
+      { t0: 0,    t1: 2.6,  kind: 'scene', idx: 0, cap: ['One calendar.', 'An animation every week.'], week: true },
+      { t0: 2.6,  t1: 4.6,  kind: 'scene', idx: 1, week: true },
+      { t0: 4.6,  t1: 6.6,  kind: 'scene', idx: 2, week: true },
+      { t0: 6.6,  t1: 8.6,  kind: 'scene', idx: 3, week: true },
+      { t0: 8.6,  t1: 10.6, kind: 'scene', idx: 4, week: true },
+      { t0: 10.6, t1: 12.4, kind: 'scene', idx: 5, week: true },
+      { t0: 12.4, t1: 14.2, kind: 'scene', idx: 6, week: true },
+      { t0: 14.2, t1: 16.0, kind: 'scene', idx: 7, week: true },
+      { t0: 16.0, t1: 19.5, kind: 'end' } ] },
+    3: { dur: 15.5, segs: [
+      { t0: 0,    t1: 3.0,  kind: 'scene', idx: 0, cap: ['Made for', 'your people.'] },
+      { t0: 3.0,  t1: 6.0,  kind: 'scene', idx: 3, cap: ['Their', 'birthdays.'], sub: 'Gold days for birthdays, trips and holidays.' },
+      { t0: 6.0,  t1: 9.0,  kind: 'scene', idx: 1, cap: ['Made-up', 'fun days.'], sub: 'Cheet Zoomies Day. Pajama Bird Watch. Hug a Tree Day.' },
+      { t0: 9.0,  t1: 12.0, kind: 'scene', idx: 7, cap: ['Printed and laminated', 'by hand.'] },
+      { t0: 12.0, t1: 15.5, kind: 'end' } ] }
+  };
+  var r = +(new URLSearchParams(location.search).get('r') || 1), R = REELS[r] || REELS[1], D = R.dur, F = 0.45;
+  var stage = document.getElementById('stage'), css = '', n = 0;
+  document.getElementById('scenecss').textContent = CAL.CSS.replace(/@font-face\{[^}]*\}/g, '');
+  function pct(t){ return (Math.max(0, Math.min(D, t)) / D * 100).toFixed(3) + '%'; }
+  /* one animation that runs the whole length of the reel; stops = [[seconds, 'css props', 'easing to the next stop'], ...] */
+  function anim(el, stops){
+    var name = 'k' + (n++), s = '@keyframes ' + name + '{';
+    if (stops[0][0] > 0) s += '0%{' + stops[0][1] + '}';
+    stops.forEach(function(k){ s += pct(k[0]) + '{' + k[1] + (k[2] ? ';animation-timing-function:' + k[2] : '') + '}'; });
+    if (stops[stops.length-1][0] < D) s += '100%{' + stops[stops.length-1][1] + '}';
+    css += s + '}\n'; el.style.animation = name + ' ' + D + 's linear both';
+  }
+  var OUT = 'cubic-bezier(.16,.84,.3,1)';
+  function el(cls, html, parent){ var d = document.createElement('div'); d.className = cls; if (html) d.innerHTML = html; (parent || stage).appendChild(d); return d; }
+  function show(e, t0, t1, first, last){ anim(e, [[t0, 'opacity:' + (first ? 1 : 0)], [t0 + (first ? 0 : F), 'opacity:1'], [t1, 'opacity:1'], [last ? t1 : t1 + F, 'opacity:' + (last ? 1 : 0)]]); }
+  function rise(e, t0, t1, dy){ anim(e, [[t0, 'opacity:0;transform:translateY(' + (dy || 26) + 'px)', OUT], [t0 + .7, 'opacity:1;transform:none'], [t1 - .1, 'opacity:1;transform:none'], [t1 + .25, 'opacity:0;transform:none']]); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function caption(L, g, extra){
+    var c = el('cap ' + (g.pos || 'top'), '<h1>' + esc(g.cap[0]) + '<br><em>' + esc(g.cap[1]) + '</em></h1>' + (extra ? '<p>' + esc(extra) + '</p>' : ''), L);
+    rise(c, g.t0 + .25, g.t1 - .15);
+  }
+  R.segs.forEach(function(g, i){
+    var first = i === 0, last = i === R.segs.length - 1, L;
+    if (g.kind === 'scene') {
+      L = el('layer');
+      var z = el('zoom', CAL.scene(g.idx, { par: 'xMidYMid slice', viewBox: X[g.idx] + ' 0 506.25 900', uid: 'r' + i }), L);
+      anim(z, [[g.t0, 'transform:scale(1)'], [g.t1 + F, 'transform:scale(1.07)']]);
+      var w = CAL.WEEKS[g.idx];
+      if (g.cap || g.week) el('shade' + (g.pos === 'bottom' ? ' b' : ''), '', L);
+      if (g.week) el('shade b', '', L);
+      if (g.cap) caption(L, g, g.sub);
+      if (g.week) { var wk = el('cap bottom', '<h1 style="font-size:36px">' + esc(w.title) + '</h1><p>' + esc(w.sub) + '</p>', L); rise(wk, g.t0 + .2, g.t1 - .1, 16); }
+    } else if (g.kind === 'cal') {
+      L = el('layer dark'); caption(L, g, g.sub);
+      var c = el('cal', '<img src="/img/sample-jan.jpg" alt="">', L);
+      anim(c, [[g.t0, 'opacity:0;transform:translateY(70px) rotate(-9deg) scale(.9)', OUT], [g.t0 + 1.1, 'opacity:1;transform:translateY(0) rotate(-4deg) scale(1)'], [g.t1 + F, 'opacity:1;transform:translateY(-10px) rotate(-3deg) scale(1.04)']]);
+    } else if (g.kind === 'phone') {
+      L = el('layer dark'); caption(L, g, g.sub);
+      var p = el('phone', '<div class="pg"><img src="/img/sample-back.jpg" alt=""></div><div class="beam"></div>', L);
+      anim(p, [[g.t0, 'opacity:0;transform:translateY(60px) scale(.94)', OUT], [g.t0 + .9, 'opacity:1;transform:none'], [g.t1 + F, 'opacity:1;transform:none']]);
+      anim(p.querySelector('.pg'), [[g.t0, 'transform:translate(-36px,-130px)'], [g.t1 + F, 'transform:translate(-36px,-190px)']]);
+      anim(p.querySelector('.beam'), [[g.t0 + 1.0, 'opacity:0;transform:translateY(40px)'], [g.t0 + 1.2, 'opacity:1;transform:translateY(40px)', 'ease-in-out'], [g.t0 + 2.4, 'opacity:1;transform:translateY(480px)', 'ease-in-out'], [g.t0 + 3.6, 'opacity:1;transform:translateY(40px)'], [g.t0 + 3.9, 'opacity:0;transform:translateY(40px)']]);
+    } else {
+      L = el('layer dark end',
+        '<svg class="paw" viewBox="0 0 74 74" aria-hidden="true"><g fill="#6fa8ff"><ellipse cx="37" cy="48" rx="17" ry="14"/><ellipse cx="13" cy="33" rx="7" ry="9"/><ellipse cx="28" cy="18" rx="7" ry="10"/><ellipse cx="47" cy="18" rx="7" ry="10"/><ellipse cx="62" cy="33" rx="7" ry="9"/></g></svg>' +
+        '<div class="logo">Cheet\'s <b>Press</b></div>' +
+        '<div class="l1">Custom calendars.<br>Every week has its own animation.</div>' +
+        '<div class="l2">Half year $8 · full year $12</div>' +
+        '<div class="btn">cheetspress.store</div>' +
+        '<div class="code">15% off with code <b>FLYER15</b></div>');
+      [].forEach.call(L.children, function(c, j){ var t = g.t0 + .35 + j * .16; anim(c, [[t, 'opacity:0;transform:translateY(22px)', OUT], [t + .6, 'opacity:1;transform:none']]); });
+    }
+    show(L, g.t0, g.t1, first, last);
+  });
+  if (R.bar) { var b = el('bar', '<i></i>'); show(b, R.bar[0], R.bar[1], true, false); anim(b.firstChild, [[R.bar[0], 'transform:scaleX(0)'], [R.bar[1], 'transform:scaleX(1)']]); }
+  document.getElementById('tl').textContent = css;
+  /* render.py calls this to jump to an exact moment */
+  window.REEL = { dur: D, seek: function(t){
+    document.getAnimations().forEach(function(a){ a.pause(); a.currentTime = t * 1000; });
+    document.querySelectorAll('svg.scene').forEach(function(s){ s.pauseAnimations(); s.setCurrentTime(t); });
+  } };
+})();
+</script>
+</body></html>

@@ -32,3 +32,8 @@ Makes one customer's calendar from their order.
 4. Commit and push `o/<slug>/` so the QR codes work. Then send the PDF.
 
 Print: 11 x 8.5 landscape, double-sided, flip on the short edge. Each month is one sheet: front = month grid, back = QR codes and what to do.
+
+## Instagram Reels
+`reels/reel.html` is the source for the three Reels in `/media` (open `/maker/reels/reel.html?r=1`, `2` or `3` on a local server to watch one).
+`python3 maker/reels/render.py` re-renders all three to `media/reelN.mp4` at 1080x1920, 30 frames a second, one exact frame at a time.
+`python3 maker/reels/render.py 2 music.mp3` renders reel 2 with a music file mixed in.
