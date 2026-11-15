@@ -164,7 +164,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   var rows=[['For',o.forName],['Months',o.months],['Design',o.design],['Delivery',o.delivery+(mail?'\n'+o.addr:'')],['Your name',o.name],['Email',o.email]];
   if(o.phone) rows.push(['Phone',o.phone]);
   $('olist').innerHTML=rows.map(function(r){return '<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>';}).join('');
-  $('lines').innerHTML='<div><span>Calendar ('+o.n+(o.n===1?' month':' months')+')</span><span>'+money(o.price)+'</span></div>'+(mail?'<div><span>Shipping</span><span>'+money(o.ship)+'</span></div>':'')+'<div class="tot"><span>Total</span><b>'+money(o.total)+'</b></div>';
+  $('lines').innerHTML='<div><span>Calendar ('+o.n+(o.n===1?' month':' months')+(o.code?', '+(+o.pct||0)+'% off with code '+esc(o.code):'')+')</span><span>'+money(o.price)+'</span></div>'+(mail?'<div><span>Shipping</span><span>'+money(o.ship)+'</span></div>':'')+'<div class="tot"><span>Total</span><b>'+money(o.total)+'</b></div>';
   if(mail){ $('cashCard').hidden=true; }
   function pm(){ return document.querySelector('input[name=pm]:checked').value; }
   function label(){ $('go').textContent = pm()==='venmo' ? 'Confirm order, then pay '+money(o.total)+' on Venmo' : 'Confirm order, pay cash at pickup'; }

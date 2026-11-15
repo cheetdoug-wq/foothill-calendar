@@ -180,7 +180,8 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
       <p class="hint">We email your order updates and a picture of your calendar to check before printing. We only use your info for your order. <a href="/privacy/">Privacy policy</a>.</p>
     </fieldset>
     <div class="sum">
-      <div class="total"><span id="sumLine"></span><b id="total">$4.00</b></div><p class="hint" id="dealHint" style="margin:6px 0 0;color:var(--orange)"></p>
+      <label for="code">Discount code <span class="hint" style="display:inline">(optional)</span></label><input type="text" id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" style="max-width:240px;text-transform:uppercase">
+      <div class="total" style="margin-top:14px"><span id="sumLine"></span><b id="total">$4.00</b></div><p class="hint" id="dealHint" style="margin:6px 0 0;color:var(--orange)"></p>
       <div class="acts"><button type="submit" class="btn" id="finish">Continue to checkout →</button></div>
       <p id="msg" role="status"></p>
     </div>
@@ -217,6 +218,8 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 (function(){
   /* ---- shop settings: fill these in when they exist ---- */
   var SHOP = { stripe: '', venmo: 'jake-douglas-44', ship: 3, orderEmail: 'cheetspress@gmail.com' };
+  /* discount codes: CODE -> fraction off the calendar price (not shipping). The flyer QR code opens /?code=FLYER15 */
+  var CODES = { FLYER15: 0.15 };
 
   var $ = function(i){ return document.getElementById(i); };
   var SCENES = ['Autumn oaks and zoomies','Golden hour turkeys','Sunset hawk over the river','Frosty morning deer','Otter under the stars','Snowy solstice','Full moon, owl and cabin','Fireworks and a fox'];
@@ -253,8 +256,11 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   function label(c){ return MON[c.m]+' '+c.y; }
   function describing(){ return $('modeDesc').checked; }
   function base(n){ return n>=7?12:n>=4?8:4; }
-  function price(n){ return base(n)+(describing()?0.5*n:0); }
-  function dealHint(n){ return ''; }
+  function codeTyped(){ return $('code').value.trim().toUpperCase(); }
+  function off(){ return CODES.hasOwnProperty(codeTyped()) ? CODES[codeTyped()] : 0; }
+  function full(n){ return base(n)+(describing()?0.5*n:0); }
+  function price(n){ return Math.round(full(n)*(1-off())*100)/100; }
+  function dealHint(n){ if(off()) return Math.round(off()*100)+'% off applied with code '+codeTyped()+'. You save '+money(full(n)-price(n))+'.'; if(codeTyped()) return 'That code is not active. Check the spelling.'; return ''; }
   function shipFor(n){ return n>=5?6:3; }
   function money(n){ return '$'+n.toFixed(2); }
   function useDates(){ return $('datesYes').checked; }
@@ -278,6 +284,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     var P=picked(); if(!months[st.act].on) { st.act=months.indexOf(P[0]); st.week=0; }
     var ds = useDates()? st.dates.filter(function(x){return x.d && months[x.mi].on;}).length : 0;
     var rows=[['For',$('forName').value.trim()||'—'],['Months',planText()],['Design',describing()?'You describe them':'We make them'],['Special days',useDates()?(ds?ds+(ds===1?' date':' dates'):'add them on the left'):'Surprise me'],['Delivery',$('delMail').checked?'Mailed (+$'+shipFor(P.length)+' shipping)':'Pickup or drop-off']];
+    if(off()) rows.push(['Discount',Math.round(off()*100)+'% off, code '+codeTyped()]);
     $('olist').innerHTML=rows.map(function(r){return '<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>';}).join('');
     st.total=price(P.length);
     $('sumLine').textContent = planName(st.plan)+', '+P.length+(P.length===1?' month':' months')+(describing()?', described':'');
@@ -308,6 +315,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     L.push('Made-up fun days: '+(funOn()?'yes':'no'));
     L.push('Delivery: '+($('delMail').checked?'Mail to: '+$('addr').value.trim().replace(/\n/g,', '):'Local pickup or drop-off'));
     L.push('From: '+$('buyer').value.trim()+' ('+$('contact').value.trim()+($('phone').value.trim()?', '+$('phone').value.trim():'')+')');
+    if(off()) L.push('Discount: code '+codeTyped()+', '+Math.round(off()*100)+'% off the calendar ('+money(full(P.length))+' down to '+money(price(P.length))+')');
     L.push('Total: '+money(st.pay)+($('delMail').checked?' (includes $'+shipFor(picked().length)+' shipping)':''));
     return L.join('\n');
   }
@@ -320,11 +328,11 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     var P=picked(), mail=$('delMail').checked, ship=mail?shipFor(P.length):0;
     var o={ forName:$('forName').value.trim(), months:planText(), n:P.length,
       design:describing()?'You describe them':'We make them', delivery:mail?'Mailed':'Pickup or drop-off', addr:mail?$('addr').value.trim():'',
-      price:st.total, ship:ship, total:st.total+ship, name:$('buyer').value.trim(), email:em, phone:$('phone').value.trim(), details:orderText() };
+      price:st.total, code:off()?codeTyped():'', pct:Math.round(off()*100), ship:ship, total:st.total+ship, name:$('buyer').value.trim(), email:em, phone:$('phone').value.trim(), details:orderText() };
     try{ sessionStorage.setItem('cpOrder', JSON.stringify(o)); sessionStorage.setItem('cpForm', JSON.stringify(snap())); }catch(err){}
     location.href='checkout/#o='+encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(o)))));
   });
-  function snap(){ var v={}; ['forName','buyer','contact','phone','addr'].forEach(function(k){ v[k]=$(k).value; });
+  function snap(){ var v={}; ['forName','buyer','contact','phone','addr','code'].forEach(function(k){ v[k]=$(k).value; });
     ['modeDesc','datesYes','delMail','alsoFun'].forEach(function(k){ v[k]=$(k).checked; });
     return {v:v, plan:st.plan, desc:months.map(function(c){return c.desc;}), dates:st.dates}; }
   function restore(){ var x=null; try{ x=JSON.parse(sessionStorage.getItem('cpForm')); }catch(e){} if(!x) return;
@@ -334,6 +342,8 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     }catch(e){} }
   $('heroPrice').textContent=(hasRest?'Rest of the year $'+base(restN)+' · ':'')+'half year $8 · full year $12'; if(!hasRest) $('heroPrice').textContent='Half year $8 · full year $12';
   restore();
+  /* a code in the link (the flyer QR code) fills the box in */
+  try{ var qc=(new URLSearchParams(location.search).get('code')||'').trim().toUpperCase(); if(/^[A-Z0-9]{3,20}$/.test(qc)) $('code').value=qc; }catch(e){}
   all();
 })();
 </script><div id="ck" class="ck" hidden role="region" aria-label="Cookie notice"><span>We don't use cookies, ads, or trackers. <a href="/privacy/">Privacy policy</a></span><button type="button" class="btn sm" id="ckOk">Got it</button></div>
