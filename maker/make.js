@@ -136,11 +136,12 @@ fs.writeFileSync(path.join(siteDir, 'index.html'), anim);
 const qrSvg = text => { const q = QR.create(text, { errorCorrectionLevel: 'M' }); const n = q.modules.size, data = q.modules.data; let d = ''; for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (data[y * n + x]) d += `M${x},${y}h1v1h-1z`; return `<svg viewBox="-2 -2 ${n + 4} ${n + 4}" class="qr"><rect x="-2" y="-2" width="${n + 4}" height="${n + 4}" fill="#fff"/><path d="${d}" fill="#111"/></svg>`; };
 const font = p => fs.readFileSync(path.join(__dirname, 'node_modules/@fontsource-variable', p)).toString('base64');
 const HERO = { 1: '0 525 1600 300', 2: '0 520 1600 300', 3: '0 300 1600 300', 4: '0 500 1600 300', 5: '0 560 1600 300', 6: '0 500 1600 300', 7: '0 470 1600 300', 8: '0 120 1600 300' };
-let pages = '';
+let pages = ''; const usedHero = new Set();
 months.forEach(M => {
   const first = new Date(M.y, M.m, 1).getDay();
   const heads = Array.from({ length: 7 }, (_, k) => DOW[(first + k) % 7]);
-  const heroW = [7, 6, 1, 4, 2, 5, 3, 8].map(k => M.weeks.find(w => w.def.id === k)).find(Boolean);
+  const order = [7, 6, 1, 4, 2, 5, 3, 8], cands = order.map(k => M.weeks.find(w => w.def.id === k)).filter(Boolean);
+  const heroW = cands.find(w => !usedHero.has(w.def.id)) || cands[0]; usedHero.add(heroW.def.id);
   let rows = '';
   M.weeks.forEach((w, r) => {
     const cells = [];
