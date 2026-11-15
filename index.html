@@ -203,8 +203,8 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     </fieldset>
     <fieldset><legend>4. How do you want to get it?</legend>
       <div class="cards">
-        <label class="card"><input type="radio" name="del" id="delPickup" value="pickup" checked><b>Local pickup or drop-off</b><span>Free, for people nearby. Pay on Venmo, or cash when you get it.</span></label>
-        <label class="card"><input type="radio" name="del" id="delMail" value="mail"><b>Mailed in the US</b><span>Shipping is extra. We tell you the cost before you pay.</span></label>
+        <label class="card"><input type="radio" name="del" id="delPickup" value="pickup" checked><b>Local pickup or drop-off</b><span>Free, for people nearby.</span></label>
+        <label class="card"><input type="radio" name="del" id="delMail" value="mail"><b>Mailed in the US</b><span>Anywhere in the US. Adds $3 shipping.</span></label>
       </div>
       <div id="addrBox" hidden><label for="addr">Mailing address</label><textarea id="addr" autocomplete="street-address"></textarea></div>
     </fieldset>
@@ -214,18 +214,14 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     </fieldset>
     <div class="sum">
       <div class="total"><span id="sumLine"></span><b id="total">$5.00</b></div><p class="hint" id="dealHint" style="margin:6px 0 0;color:var(--orange)"></p>
-      <div class="acts"><button type="submit" class="btn" id="finish">Place my order</button></div>
+      <div class="acts"><button type="submit" class="btn" id="finish">Pay with Venmo</button><button type="button" class="btn ghost" id="cashBtn">Pay cash at pickup</button></div>
       <p id="msg" role="status"></p>
     </div>
     <div class="sum" id="send" hidden tabindex="-1">
       <h3 id="sendTitle"></h3>
       <p id="sendText" class="hint"></p>
-      <div class="steps3" id="steps">
-        <div class="step3"><h4><span class="n">✓</span>Order received</h4><p class="hint" id="s1"></p></div>
-        <div class="step3"><h4><span class="n">2</span>Pay</h4><p class="hint" id="s2"></p><div class="acts" id="payActs"></div></div>
-        <div class="step3"><h4><span class="n">3</span>We make it</h4><p class="hint">Once your payment comes in, we design your calendar and send you a picture to check before we print. Questions? Email <b id="mailShow"></b>.</p></div>
-      </div>
-      <div id="fallback" hidden><div class="acts" id="sendActs"></div><p id="copyMsg" role="status" class="hint"></p><textarea id="orderText" readonly aria-label="Your order"></textarea></div>
+      <div class="acts" id="payActs"></div>
+      <textarea id="orderText" hidden aria-hidden="true"></textarea>
     </div>
   </form>
   <aside class="preview" aria-label="Your order">
@@ -234,9 +230,8 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     <div class="ototal"><span>Total</span><b id="ototal">$5.00</b></div>
     <h3 class="ah" style="margin-top:20px">What happens next</h3>
     <ol class="next">
-      <li><b>Place your order.</b> It comes straight to us. No email needed.</li>
-      <li><b>Pay.</b> The Venmo button fills in the exact amount. Cash at pickup works too. Mailed orders get the shipping total first.</li>
-      <li><b>We design it.</b> New scenes and fun days made just for you. We send a picture to check before printing.</li>
+      <li><b>Pay with Venmo.</b> Your order comes straight to us and Venmo opens with the exact amount filled in.</li>
+      <li><b>We design it.</b> New scenes and fun days made just for you. We send you a picture to check before printing.</li>
       <li><b>Printed and laminated.</b> Picked up, dropped off, or mailed.</li>
     </ol>
   </aside>
@@ -522,7 +517,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 <script>
 (function(){
   /* ---- shop settings: fill these in when they exist ---- */
-  var SHOP = { stripe: '', venmo: 'jake-douglas-44', orderEmail: 'cheetspress@gmail.com' };
+  var SHOP = { stripe: '', venmo: 'jake-douglas-44', ship: 3, orderEmail: 'cheetspress@gmail.com' };
 
   var $ = function(i){ return document.getElementById(i); };
   var SCENES = ['Autumn oaks and zoomies','Golden hour turkeys','Sunset hawk over the river','Frosty morning deer','Otter under the stars','Snowy solstice','Full moon, owl and cabin','Fireworks and a fox'];
@@ -572,12 +567,12 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   function drawPreview(force){
     var P=picked(); if(!months[st.act].on) { st.act=months.indexOf(P[0]); st.week=0; }
     var ds = useDates()? st.dates.filter(function(x){return x.d && months[x.mi].on;}).length : 0;
-    var rows=[['For',$('forName').value.trim()||'—'],['Months',P.length===12?'Full year ('+label(P[0])+' to '+label(P[11])+')':P.map(label).join(', ')],['Design',describing()?'You describe them':'We make them'],['Special days',useDates()?(ds?ds+(ds===1?' date':' dates'):'add them on the left'):'Surprise me'],['Delivery',$('delMail').checked?'Mailed (shipping extra)':'Pickup or drop-off']];
+    var rows=[['For',$('forName').value.trim()||'—'],['Months',P.length===12?'Full year ('+label(P[0])+' to '+label(P[11])+')':P.map(label).join(', ')],['Design',describing()?'You describe them':'We make them'],['Special days',useDates()?(ds?ds+(ds===1?' date':' dates'):'add them on the left'):'Surprise me'],['Delivery',$('delMail').checked?'Mailed (+$'+SHOP.ship+' shipping)':'Pickup or drop-off']];
     $('olist').innerHTML=rows.map(function(r){return '<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>';}).join('');
     st.total=price(P.length);
     $('sumLine').textContent = (P.length===12?'Full year, 12 months':P.length+(P.length===1?' month':' months'))+(describing()?', described':'');
     $('dealHint').textContent = dealHint(P.length);
-    $('total').textContent = money(st.total); $('ototal').textContent = money(st.total)+($('delMail').checked?' + shipping':'');
+    var ship=$('delMail').checked?SHOP.ship:0; st.pay=st.total+ship; $('total').textContent = money(st.pay); $('ototal').textContent = money(st.pay); $('sumLine').textContent += ship?' + $'+ship+' shipping':''; $('finish').textContent='Pay '+money(st.pay)+' with Venmo'; $('cashBtn').hidden=$('delMail').checked;
     $('descBox').hidden=!describing(); $('datesBox').hidden=!useDates(); $('addrBox').hidden=!$('delMail').checked;
   }
   function all(){ drawChips(); drawMonths(); drawDates(); drawPreview(true); }
@@ -606,50 +601,33 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     L.push('Made-up fun days: '+(funOn()?'yes':'no'));
     L.push('Delivery: '+($('delMail').checked?'Mail to: '+$('addr').value.trim().replace(/\n/g,', '):'Local pickup or drop-off'));
     L.push('From: '+$('buyer').value.trim()+' ('+$('contact').value.trim()+')');
-    L.push('Total: '+money(st.total)+($('delMail').checked?' plus shipping':''));
+    L.push('Total: '+money(st.pay)+($('delMail').checked?' (includes $'+SHOP.ship+' shipping)':''));
     return L.join('\n');
   }
-  $('f').addEventListener('submit', function(e){ e.preventDefault(); var m=$('msg'), miss=[];
+  function place(cash){ var m=$('msg'), miss=[];
     if(!$('forName').value.trim()) miss.push('who the calendar is for'); if(!$('buyer').value.trim()) miss.push('your name'); if(!$('contact').value.trim()) miss.push('your email or phone');
     if($('delMail').checked && !$('addr').value.trim()) miss.push('a mailing address');
     if(miss.length){ m.className='bad'; m.textContent='Still needed: '+miss.join(', ')+'.'; $('send').hidden=true; return; }
     m.className=''; m.textContent='';
-    var oid='CP-'+String(Math.floor(1000+Math.random()*9000)), local=$('delPickup').checked, who=$('forName').value.trim(), t='Order '+oid+'\n'+orderText(), total=st.total;
-    $('orderText').value=t; $('copyMsg').textContent=''; $('mailShow').textContent=SHOP.orderEmail;
-    var btn=$('finish'); btn.disabled=true; btn.textContent='Sending your order…';
-    function done(ok, why){
-      btn.disabled=false; btn.textContent='Place my order';
-      $('send').hidden=false;
-      if(ok){
-        $('steps').hidden=false; $('fallback').hidden=true;
-        $('sendTitle').innerHTML='Thank you! Order <span class="oid">'+oid+'</span> is in.';
-        $('sendText').textContent='Keep this number. It goes in your Venmo note so we can match your payment.';
-        $('s1').textContent='We got your order for '+who+'. We will reach you at '+$('contact').value.trim()+'.';
-        var u=(SHOP.venmo||'').replace(/^@/,'');
-        if(local){
-          $('s2').innerHTML='Pay <b>'+money(total)+'</b> to <b>@'+esc(u)+'</b>. The button fills in the amount and your order number. Or pay with cash when you pick it up.';
-          $('payActs').innerHTML='<a class="btn" id="venmoBtn" target="_blank" rel="noopener" href="https://venmo.com/'+encodeURIComponent(u)+'?txn=pay&amount='+total.toFixed(2)+'&note='+encodeURIComponent("Cheet's Press "+oid)+'">Pay '+money(total)+' with Venmo</a>';
-        } else {
-          $('s2').innerHTML='We will email you the shipping cost and the full total, with a Venmo link to <b>@'+esc(u)+'</b>. No need to pay yet.';
-          $('payActs').innerHTML='';
-        }
-      } else {
-        $('steps').hidden=true; $('fallback').hidden=false;
-        $('sendTitle').textContent='We could not send your order';
-        $('sendText').textContent=(why||'Something went wrong.')+' Send it to '+SHOP.orderEmail+' instead, and we will take it from there.';
-        $('sendActs').innerHTML='<a class="btn" href="mailto:'+esc(SHOP.orderEmail)+'?subject='+encodeURIComponent("Cheet's Press order "+oid+" for "+who)+'&body='+encodeURIComponent(t)+'">Email my order</a><button type="button" class="btn ghost" id="copyBtn">Copy the order</button>';
-      }
+    var oid='CP-'+String(Math.floor(1000+Math.random()*9000)), who=$('forName').value.trim(), amt=st.pay, u=SHOP.venmo.replace(/^@/,'');
+    var vurl='https://venmo.com/'+encodeURIComponent(u)+'?txn=pay&amount='+amt.toFixed(2)+'&note='+encodeURIComponent("Cheet's Press "+oid);
+    var t='Order '+oid+(cash?' (CASH AT PICKUP)':' (paying on Venmo)')+'\n'+orderText();
+    if(!cash){ try{ window.open(vurl,'_blank','noopener'); }catch(e){} }
+    var b1=$('finish'), b2=$('cashBtn'); b1.disabled=b2.disabled=true;
+    function show(ok){
+      b1.disabled=b2.disabled=false; $('send').hidden=false;
+      var pay='<a class="btn" target="_blank" rel="noopener" href="'+vurl+'">Pay '+money(amt)+' with Venmo</a>';
+      if(ok && cash){ $('sendTitle').innerHTML='Thank you! Order <span class="oid">'+oid+'</span> is in.'; $('sendText').textContent='Bring '+money(amt)+' in cash when you pick it up. We will reach you at '+$('contact').value.trim()+' when it is ready.'; $('payActs').innerHTML=''; }
+      else if(ok){ $('sendTitle').innerHTML='Thank you! Order <span class="oid">'+oid+'</span> is in.'; $('sendText').textContent='Venmo opened in a new tab with '+money(amt)+' and your order number filled in. Finish paying there. Once it comes in, we design your calendar and send you a picture to check before printing. Venmo did not open? Tap the button.'; $('payActs').innerHTML=pay; }
+      else { $('sendTitle').textContent='Your order did not go through'; $('sendText').textContent='Check your internet and tap the button again. If you already paid on Venmo, that is fine, we will match it by the order number '+oid+'.'; $('payActs').innerHTML=''; }
       $('send').focus(); $('send').scrollIntoView({block:'start'});
     }
     fetch('https://formsubmit.co/ajax/'+SHOP.orderEmail, {method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body: JSON.stringify({_subject:"New order "+oid+" for "+who+" ("+money(total)+(local?'':' + shipping')+")", _template:'box', _captcha:'false', Order:oid, Total:money(total)+(local?'':' plus shipping'), Name:$('buyer').value.trim(), Contact:$('contact').value.trim(), Details:t})})
-      .then(function(r){ return r.json(); })
-      .then(function(j){ done(String(j.success)==='true', j.message); })
-      .catch(function(){ done(false, 'Your connection dropped.'); });
-  });
-  $('send').addEventListener('click', function(e){ if(!e.target.closest('#copyBtn')) return; var box=$('orderText'), c=$('copyMsg');
-    function no(){ box.focus(); box.select(); c.textContent='Select the order text and copy it.'; }
-    try{ navigator.clipboard.writeText(box.value).then(function(){ c.textContent='Copied.'; }, no); }catch(err){ no(); } });
+      body: JSON.stringify({_subject:"New order "+oid+" for "+who+" ("+money(amt)+(cash?', cash':', Venmo')+")", _template:'box', _captcha:'false', Order:oid, Total:money(amt), Payment:cash?'Cash at pickup':'Venmo (check for '+oid+' in the note)', Name:$('buyer').value.trim(), Contact:$('contact').value.trim(), Details:t})})
+      .then(function(r){ return r.json(); }).then(function(j){ show(String(j.success)==='true'); }).catch(function(){ show(false); });
+  }
+  $('f').addEventListener('submit', function(e){ e.preventDefault(); place(false); });
+  $('cashBtn').addEventListener('click', function(){ place(true); });
   all();
 })();
 </script></body></html>
