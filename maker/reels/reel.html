@@ -26,6 +26,13 @@ html,body{margin:0;background:#000}
 .phone{position:absolute;left:50%;top:300px;width:300px;height:560px;margin-left:-150px;border-radius:38px;background:#0d0718;border:8px solid #0d0718;box-shadow:0 0 0 2px #5b3d93,0 30px 70px #000b;overflow:hidden;opacity:0}
 .phone .pg{position:absolute;left:0;top:0;width:1130px}
 .phone .beam{position:absolute;left:10px;right:10px;top:0;height:5px;border-radius:5px;background:#3dff8a;box-shadow:0 0 18px 4px #3dff8a}
+.dull{position:absolute;left:50%;top:330px;width:430px;margin-left:-215px;background:#e9e7e2;border-radius:6px;box-shadow:0 26px 60px #000a;padding:18px 18px 20px;box-sizing:border-box;opacity:0;color:#8b8a86}
+.dull b{display:block;font:800 24px/1 "Figtree",sans-serif;letter-spacing:6px;color:#9a9994;margin-bottom:12px}
+.dull .g{display:grid;grid-template-columns:repeat(7,1fr);border-top:2px solid #c9c7c1;border-left:2px solid #c9c7c1}
+.dull .g i{display:block;height:54px;border-right:2px solid #c9c7c1;border-bottom:2px solid #c9c7c1;font:600 10px/1.15 "Figtree",sans-serif;font-style:normal;padding:4px 3px;box-sizing:border-box;color:#7d7c78}
+.dull .g i u{display:block;text-decoration:none;font-weight:800;color:#aaa9a4;margin-bottom:2px}
+.big{position:absolute;left:50%;top:400px;width:440px;margin-left:-220px;opacity:0}
+.big svg.scene{position:static;width:100%;height:auto;overflow:visible}
 .bar{position:absolute;left:34px;right:34px;top:40px;height:5px;border-radius:5px;background:#fff5;opacity:0;overflow:hidden}
 .bar i{display:block;height:100%;width:100%;background:#ff8a1f;transform-origin:0 50%;transform:scaleX(0)}
 .end{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0}
@@ -69,7 +76,30 @@ html,body{margin:0;background:#000}
       { t0: 3.0,  t1: 6.0,  kind: 'scene', idx: 3, cap: ['Their', 'birthdays.'], sub: 'Gold days for birthdays, trips and holidays.' },
       { t0: 6.0,  t1: 9.0,  kind: 'scene', idx: 1, cap: ['Made-up', 'fun days.'], sub: 'Cheet Zoomies Day. Pajama Bird Watch. Hug a Tree Day.' },
       { t0: 9.0,  t1: 12.0, kind: 'scene', idx: 7, cap: ['Printed and laminated', 'by hand.'] },
-      { t0: 12.0, t1: 15.5, kind: 'end' } ] }
+      { t0: 12.0, t1: 15.5, kind: 'end' } ] },
+    /* skit: Cheet picks the holidays */
+    4: { dur: 17, segs: [
+      { t0: 0,    t1: 3.0,  kind: 'cheet', cap: ['We let a chihuahua', 'pick the holidays.'] },
+      { t0: 3.0,  t1: 5.8,  kind: 'scene', idx: 0, cap: ['Monday:', 'Zoomies Day.'] },
+      { t0: 5.8,  t1: 8.6,  kind: 'scene', idx: 1, cap: ['Wednesday:', 'Stare at Turkeys Day.'] },
+      { t0: 8.6,  t1: 11.2, kind: 'scene', idx: 6, cap: ['Friday:', 'Sweater Weather Day.'] },
+      { t0: 11.2, t1: 13.8, kind: 'scene', idx: 7, cap: ['Saturday:', 'Stay Up for the Fox.'], sub: 'Every calendar gets made-up fun days.' },
+      { t0: 13.8, t1: 17,   kind: 'end' } ] },
+    /* skit: a regular calendar vs yours */
+    5: { dur: 17.5, segs: [
+      { t0: 0,    t1: 3.4,  kind: 'dull',  cap: ['A regular', 'calendar.'], sub: 'Dentist. Trash day. Taxes.' },
+      { t0: 3.4,  t1: 6.4,  kind: 'scene', idx: 6, cap: ['Your', 'calendar.'], sub: 'A full moon, an owl, and a dog in a sweater.' },
+      { t0: 6.4,  t1: 8.8,  kind: 'scene', idx: 4, cap: ['Also yours:', 'an otter.'], sub: 'Under the stars. With meteors.' },
+      { t0: 8.8,  t1: 11.2, kind: 'scene', idx: 7, cap: ['And a fox.', 'With fireworks.'] },
+      { t0: 11.2, t1: 14.2, kind: 'phone', cap: ['Scan the code.', 'Watch it move.'] },
+      { t0: 14.2, t1: 17.5, kind: 'end' } ] },
+    /* ad: the gift */
+    6: { dur: 16, segs: [
+      { t0: 0,    t1: 3.0,  kind: 'cal',   cap: ['The gift nobody', 'else is giving.'], sub: 'A calendar made just for them.' },
+      { t0: 3.0,  t1: 6.0,  kind: 'scene', idx: 3, cap: ['Their birthdays.', 'Their people.'], sub: 'Their dates go right on the calendar.' },
+      { t0: 6.0,  t1: 9.4,  kind: 'phone', cap: ['Scan the code', 'on the back…'] },
+      { t0: 9.4,  t1: 12.6, kind: 'scene', idx: 5, cap: ['…and that week', 'starts moving.'] },
+      { t0: 12.6, t1: 16,   kind: 'end' } ] }
   };
   var r = +(new URLSearchParams(location.search).get('r') || 1), R = REELS[r] || REELS[1], D = R.dur, F = 0.45;
   var stage = document.getElementById('stage'), css = '', n = 0;
@@ -107,6 +137,20 @@ html,body{margin:0;background:#000}
       L = el('layer dark'); caption(L, g, g.sub);
       var c = el('cal', '<img src="/img/sample-jan.jpg" alt="">', L);
       anim(c, [[g.t0, 'opacity:0;transform:translateY(70px) rotate(-9deg) scale(.9)', OUT], [g.t0 + 1.1, 'opacity:1;transform:translateY(0) rotate(-4deg) scale(1)'], [g.t1 + F, 'opacity:1;transform:translateY(-10px) rotate(-3deg) scale(1.04)']]);
+    } else if (g.kind === 'dull') {
+      L = el('layer dark'); caption(L, g, g.sub);
+      var notes = {3:'Dentist',8:'Trash day',11:'Meeting',12:'Meeting',15:'Trash day',17:'Taxes',19:'Meeting',22:'Trash day',25:'Oil change',29:'Trash day'}, cells = '';
+      for (var q = 1; q <= 35; q++) cells += '<i><u>' + (q <= 31 ? q : '') + '</u>' + (notes[q] || '') + '</i>';
+      var dl = el('dull', '<b>MONTH</b><div class="g">' + cells + '</div>', L);
+      anim(dl, [[g.t0, 'opacity:0;transform:translateY(50px)', OUT], [g.t0 + 1.0, 'opacity:1;transform:none'], [g.t1 + F, 'opacity:1;transform:translateY(-8px)']]);
+    } else if (g.kind === 'cheet') {
+      L = el('layer dark'); caption(L, g, g.sub);
+      /* lift Cheet out of a scene and show her big, trotting in place */
+      var tmp = document.createElement('div'); tmp.innerHTML = CAL.scene(0, { uid: 'c' + i });
+      var ch = tmp.querySelector('.pace'); ch.classList.remove('pace'); ch.removeAttribute('style');
+      var bg = el('big', '<svg class="scene" viewBox="-70 -112 190 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="22" cy="2" rx="62" ry="6" fill="#0006"/></svg>', L);
+      bg.firstChild.appendChild(ch);
+      anim(bg, [[g.t0, 'opacity:0;transform:translateX(-120px)', OUT], [g.t0 + 1.0, 'opacity:1;transform:none'], [g.t1 + F, 'opacity:1;transform:translateX(20px)']]);
     } else if (g.kind === 'phone') {
       L = el('layer dark'); caption(L, g, g.sub);
       var p = el('phone', '<div class="pg"><img src="/img/sample-back.jpg" alt=""></div><div class="beam"></div>', L);

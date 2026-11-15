@@ -1,5 +1,6 @@
-# Render the Instagram Reels to media/reel1.mp4, reel2.mp4, reel3.mp4.
-#   python3 maker/reels/render.py            -> all three
+# Render the Instagram Reels to media/reel1.mp4 ... reel6.mp4.
+#   python3 maker/reels/render.py            -> all of them
+#   python3 maker/reels/render.py 4 5 6      -> just those
 #   python3 maker/reels/render.py 2          -> just reel 2
 #   python3 maker/reels/render.py 2 music.mp3 -> reel 2 with a music track mixed in
 # Needs: pip install playwright, Chrome or Chromium, ffmpeg.
@@ -24,11 +25,11 @@ def render(pg, n, music=None):
     pg.wait_for_function('window.REEL && document.fonts.status === "loaded"')
     pg.evaluate('Promise.all([].map.call(document.images, i => i.decode()))')
     dur = pg.evaluate('REEL.dur'); frames = round(dur * FPS)
-    cmd = ['ffmpeg', '-v', 'error', '-y', '-f', 'image2pipe', '-framerate', str(FPS), '-c:v', 'png', '-i', '-']
+    cmd = ['ffmpeg', '-v', 'error', '-y', '-f', 'image2pipe', '-framerate', str(FPS), '-c:v', 'mjpeg', '-i', '-']
     if music: cmd += ['-stream_loop', '-1', '-i', music]
     else: cmd += ['-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo']
     cmd += ['-map', '0:v', '-map', '1:a', '-t', f'{dur}',
-            '-vf', 'scale=1080:1920:flags=lanczos,format=yuv420p', '-r', str(FPS),
+            '-vf', 'scale=1080:1920:flags=lanczos,format=yuv420p', '-color_range', 'tv', '-r', str(FPS),
             '-c:v', 'libx264', '-preset', 'slow', '-crf', '14', '-profile:v', 'high', '-g', str(FPS * 2),
             '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709',
             '-af', f'afade=t=in:d=0.4,afade=t=out:st={dur - 1.2}:d=1.2', '-c:a', 'aac', '-b:a', '192k',
@@ -36,13 +37,13 @@ def render(pg, n, music=None):
     ff = subprocess.Popen(cmd, stdin=subprocess.PIPE)
     for i in range(frames):
         pg.evaluate('t => REEL.seek(t)', i / FPS)
-        ff.stdin.write(pg.screenshot(type='png', clip={'x': 0, 'y': 0, 'width': 540, 'height': 960}))
+        ff.stdin.write(pg.screenshot(type='jpeg', quality=95, clip={'x': 0, 'y': 0, 'width': 540, 'height': 960}))
     ff.stdin.close(); ff.wait()
     print(out, f'{frames} frames, {dur}s', 'with music' if music else 'silent track')
 
 if __name__ == '__main__':
-    which = [int(sys.argv[1])] if len(sys.argv) > 1 else [1, 2, 3]
-    music = sys.argv[2] if len(sys.argv) > 2 else None
+    which = [int(a) for a in sys.argv[1:] if a.isdigit()] or [1, 2, 3, 4, 5, 6]
+    music = next((a for a in sys.argv[1:] if not a.isdigit()), None)
     srv = serve()
     with sync_playwright() as p:
         try: b = p.chromium.launch(channel='chrome', args=['--no-sandbox'])

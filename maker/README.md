@@ -34,6 +34,6 @@ Makes one customer's calendar from their order.
 Print: 11 x 8.5 landscape, double-sided, flip on the short edge. Each month is one sheet: front = month grid, back = QR codes and what to do.
 
 ## Instagram Reels
-`reels/reel.html` is the source for the three Reels in `/media` (open `/maker/reels/reel.html?r=1`, `2` or `3` on a local server to watch one).
-`python3 maker/reels/render.py` re-renders all three to `media/reelN.mp4` at 1080x1920, 30 frames a second, one exact frame at a time.
+`reels/reel.html` is the source for the Reels in `/media` (open `/maker/reels/reel.html?r=1` through `6` on a local server to watch one). 1 to 3 are the first three ads; 4 is the "Cheet picks the holidays" skit, 5 is "a regular calendar vs yours", 6 is the gift ad.
+`python3 maker/reels/render.py` re-renders all of them to `media/reelN.mp4` at 1080x1920, 30 frames a second, one exact frame at a time.
 `python3 maker/reels/render.py 2 music.mp3` renders reel 2 with a music file mixed in.
