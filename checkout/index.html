@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checkout · Cheet's Press</title><meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{ /* A print shop poster: deep grape paper, one loud orange ink, chunky press type. Layout: poster hero with a live scene, three steps, then the order builder (form left, live preview right). */
+  --grape:#1c0e33; --plum:#2b1650; --line:#4b2f7d; --ink:#fbf4ff; --muted:#c6b4e6; --orange:#ff8a1f; --cream:#fff3df;
+  --display:"Bowlby One","Arial Black",Impact,sans-serif; --body:"Figtree",system-ui,sans-serif; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;background:var(--grape);color:var(--ink);font-family:var(--body);line-height:1.5}
+body{background-image:radial-gradient(rgba(255,255,255,.055) 1.2px,transparent 1.3px);background-size:14px 14px}
+a{color:var(--orange)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header.bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0}
+.logo{font-family:var(--display);font-size:22px;color:var(--ink);text-decoration:none;letter-spacing:.01em}
+.logo b{color:var(--orange);font-weight:400}
+.btn{display:inline-block;font-family:var(--body);font-weight:800;font-size:16px;border:0;border-radius:999px;padding:13px 22px;background:var(--orange);color:#2a1300;text-decoration:none;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 5px 0 #b85600}
+.btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 #b85600}.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #b85600}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.card:focus-within,.chip:focus-visible,.wk:focus-visible{outline:3px solid var(--cream);outline-offset:2px}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--line)}
+.btn.off{background:var(--plum);color:var(--muted);box-shadow:inset 0 0 0 2px var(--line);cursor:not-allowed}
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:34px;align-items:center;padding:26px 0 10px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(46px,8.4vw,104px);line-height:.94;margin:0;color:var(--orange);text-wrap:balance;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--ink)}
+.lede{font-size:clamp(17px,2vw,20px);color:var(--muted);max-width:46ch;margin:18px 0 24px}
+.lede b{color:var(--ink)}
+.cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.price{font-weight:800;color:var(--cream)}
+.demo{background:var(--cream);border-radius:20px;padding:12px;transform:rotate(1.6deg);box-shadow:0 22px 50px rgba(0,0,0,.5)}
+.stage{aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{font:700 13px var(--body);border:0;border-radius:999px;padding:7px 11px;background:#ead9bd;color:#3a2410;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--grape);color:var(--cream)}
+.runway{height:78px;position:relative;overflow:hidden;background:var(--orange);border-radius:16px;margin:14px 0 0}
+.runway svg{position:absolute;left:0;bottom:0;width:100%;height:74px}
+@keyframes dash{from{transform:translateX(-140px)}to{transform:translateX(1340px)}}
+.runner{animation:dash 9s linear infinite}
+h2{font-family:var(--display);font-weight:400;font-size:clamp(28px,4.4vw,46px);line-height:1;margin:0 0 8px;color:var(--ink)}
+section{padding:54px 0 0}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px;counter-reset:s}
+.step{background:var(--plum);border:2px solid var(--line);border-radius:18px;padding:20px}
+.step::before{counter-increment:s;content:counter(s);font-family:var(--display);font-size:40px;color:var(--orange);line-height:1;display:block;margin-bottom:8px}
+.step b{font-size:19px;display:block}.step p{margin:6px 0 0;color:var(--muted)}
+.build{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start;margin-top:22px}
+form{display:grid;gap:16px}
+fieldset{border:2px solid var(--line);border-radius:18px;padding:18px;margin:0;background:var(--plum);min-width:0}
+legend{font-family:var(--display);font-size:19px;padding:0 8px;color:var(--orange)}
+label{font-weight:700;display:block;margin:10px 0 5px}
+.hint{color:var(--muted);font-size:14px;margin:6px 0 0}
+input[type=text],input[type=email],select,textarea{width:100%;font:600 16px var(--body);color:var(--ink);background:var(--grape);border:2px solid var(--line);border-radius:12px;padding:11px 12px}
+textarea{min-height:76px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{position:relative;border:2px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;background:var(--grape);margin:0;font-weight:600}
+.card input{position:absolute;opacity:0}
+.card b{display:block;font-size:17px}.card .p{font-family:var(--display);color:var(--orange);font-size:22px}
+.card span{color:var(--muted);font-size:14px;display:block}
+.card:has(input:checked){border-color:var(--orange);background:#3a1d12}
+.drow3{display:grid;grid-template-columns:78px 78px 1fr 44px;gap:8px;margin-top:10px}
+.x{border:2px solid var(--line);background:var(--grape);color:var(--ink);border-radius:12px;font:800 18px var(--body);cursor:pointer}
+.srow{display:grid;grid-template-columns:86px 1fr;gap:8px;align-items:center;margin-top:8px}
+.srow span{font-weight:700;color:var(--muted)}
+[hidden]{display:none!important}
+.mchips{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+.mchip{font:800 14px var(--body);border:2px solid var(--line);border-radius:12px;padding:10px 4px;background:var(--grape);color:var(--ink);cursor:pointer}
+.mchip[aria-pressed=true]{background:var(--orange);border-color:var(--orange);color:#2a1300}
+.mchip:focus-visible{outline:3px solid var(--cream);outline-offset:2px}
+.macts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn.sm{padding:9px 16px;font-size:14px}
+.mcard{border:2px solid var(--line);border-radius:14px;padding:14px;background:var(--grape);margin-top:12px}
+.mhead{display:flex;justify-content:space-between;align-items:baseline}.mhead b{font-size:18px}.mhead .p{font-family:var(--display);color:var(--orange);font-size:20px}
+.sum h3{font-family:var(--display);font-weight:400;font-size:24px;margin:0 0 6px;color:var(--orange)}.sum p{margin:0 0 4px}
+#send{margin-top:0}
+.preview{position:sticky;top:14px;background:var(--cream);color:#24122e;border-radius:20px;padding:14px;box-shadow:0 22px 50px rgba(0,0,0,.45)}
+.ptitle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:10px 2px 6px}
+.ptitle b{font-family:var(--display);font-weight:400;font-size:24px}.ptitle span{font-weight:700;color:#7a4a12;font-size:14px;text-align:right}
+.grid{display:grid;gap:4px}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;border:0;background:none;padding:3px;border-radius:10px;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.wk[aria-pressed=true]{background:#ffd9a8}
+.c{background:#fff;border:1.5px solid #dccdb2;border-radius:7px;min-height:46px;padding:3px 5px;font-weight:800;font-size:13px;overflow:hidden}
+.c small{display:block;font-size:9.5px;line-height:1.1;font-weight:700;color:#8a4a00}
+.c.on{background:#ffe7c4;border-color:var(--orange)} .c.no{background:transparent;border-color:transparent}
+.ah{font-family:var(--display);font-weight:400;font-size:24px;margin:0 0 10px;color:#24122e}.olist{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:15px}.olist dt{font-weight:800;color:#6a557a}.olist dd{margin:0}.ototal{display:flex;justify-content:space-between;align-items:baseline;border-top:2px dashed #d9c8b0;margin-top:12px;padding-top:10px;font-weight:800}.ototal b{font-family:var(--display);font-weight:400;font-size:34px;color:#e86f00}.next{margin:0;padding-left:20px;display:grid;gap:8px;font-size:15px}.next b{display:block}.steps3{display:grid;gap:14px;margin-top:6px}.step3{border-radius:16px;background:rgba(255,255,255,.06);padding:14px 16px}.step3 h4{margin:0 0 6px;font-size:17px}.step3 .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--orange);color:#2a1300;font-weight:900;margin-right:8px}.oid{font-weight:900;color:var(--orange)}
+.pnote{font-size:13px;color:#6a557a;margin:8px 2px 0}
+.sum{background:var(--plum);border:2px solid var(--orange);border-radius:18px;padding:18px}
+.total{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:18px}
+.total b{font-family:var(--display);font-weight:400;font-size:34px;color:var(--orange)}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+#msg{font-weight:700;margin:12px 0 0;min-height:1.4em}
+#msg.bad{color:#ffb4a8} #msg.ok{color:#b8f5b0}
+#orderText{margin-top:12px;min-height:220px;font:600 13px ui-monospace,Menlo,monospace}
+.soon{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.soon div{border:2px dashed var(--line);border-radius:18px;padding:18px;color:var(--muted)} .soon b{color:var(--ink);display:block;font-size:18px}
+footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);color:var(--muted);font-size:14px}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.gal figure{margin:0}.gal img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 14px 30px rgba(0,0,0,.45);transform:rotate(-1deg)}.gal figure:nth-child(2) img{transform:rotate(1.2deg)}.gal figcaption{margin-top:10px;font-weight:700;font-size:14px;opacity:.85}@media (max-width:860px){.gal{grid-template-columns:1fr}}
+@media (max-width:860px){.hero,.build{grid-template-columns:1fr}.steps,.soon{grid-template-columns:1fr}.demo{transform:none}.preview{position:static;order:-1}}
+@media (max-width:460px){.drow3{grid-template-columns:1fr 1fr 44px}.drow3 input{grid-column:1/3;grid-row:2}.cards,.two{grid-template-columns:1fr}.mchips{grid-template-columns:repeat(4,1fr)}}
+@media (prefers-reduced-motion:reduce){.runner{animation:none}html{scroll-behavior:auto}}
+
+
+.co{max-width:760px;margin:10px auto 60px}
+.co h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,6vw,54px);line-height:1;margin:10px 0 6px}
+.panel{background:var(--cream);color:#24122e;border-radius:20px;padding:20px;box-shadow:0 22px 50px rgba(0,0,0,.45);margin-top:18px}
+.panel h2{font-family:var(--display);font-weight:400;font-size:24px;margin:0 0 10px;color:#24122e}
+.olist{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0;font-size:15px}.olist dt{font-weight:800;color:#6a557a}.olist dd{margin:0;white-space:pre-line}
+.lines{border-top:2px dashed #d9c8b0;margin-top:14px;padding-top:10px;display:grid;gap:4px;font-size:15px}.lines div{display:flex;justify-content:space-between}
+.lines .tot{font-weight:800;font-size:18px;align-items:baseline}.lines .tot b{font-family:var(--display);font-weight:400;font-size:36px;color:#e86f00}
+.pay{margin-top:18px}.pay .cards{margin-top:6px}
+.ok{text-align:left}.ok .big{font-family:var(--display);font-size:clamp(30px,5vw,44px);line-height:1.05;margin:0 0 8px}.oid{color:var(--orange)}
+.steps4{display:grid;gap:12px;margin-top:16px}.steps4 div{background:var(--plum);border:2px solid var(--line);border-radius:14px;padding:12px 14px}.steps4 b{display:block}
+.edit{color:var(--muted);font-size:14px}
+</style></head><body>
+<div class="wrap">
+<header class="bar"><a class="logo" href="../">Cheet's <b>Press</b></a><a class="edit" href="../#build">← Edit my order</a></header>
+<main class="co" id="main">
+  <div id="none" hidden><h1>Nothing to check out yet</h1><p class="lede">Build your calendar first, then come back here.</p><a class="btn" href="../#build">Build a calendar</a></div>
+  <div id="checkout" hidden>
+    <h1>Checkout</h1><p class="lede" style="margin:0">Look it over, pick how you pay, and confirm.</p>
+    <section class="panel"><h2>Your order</h2><dl class="olist" id="olist"></dl>
+      <div class="lines" id="lines"></div></section>
+    <form id="pf" class="pay" novalidate>
+      <fieldset><legend>How do you want to pay?</legend>
+        <div class="cards">
+          <label class="card"><input type="radio" name="pm" value="venmo" checked><b>Venmo</b><span>Venmo opens with the amount and your order number filled in. Pay from your Venmo balance, bank or card.</span></label>
+          <label class="card" id="cashCard"><input type="radio" name="pm" value="cash"><b>Cash at pickup</b><span>Pay when you pick up your calendar.</span></label>
+        </div>
+      </fieldset>
+      <div class="sum" style="margin-top:16px"><div class="acts" style="margin-top:0"><button class="btn" id="go" type="submit">Confirm order</button></div><p class="hint" id="msg" role="status"></p></div>
+    </form>
+  </div>
+  <div id="done" class="ok" hidden tabindex="-1">
+    <p class="big">Order <span class="oid" id="oid"></span> is confirmed.</p>
+    <p class="lede" id="doneText" style="margin:0"></p>
+    <div class="acts" id="doneActs"></div>
+    <div class="steps4">
+      <div><b>Check your email for progress.</b>We sent a confirmation to <span id="em"></span>. Updates and a picture of your calendar to check come there too. Not there? Look in spam or Promotions.</div>
+      <div><b>We design it.</b>Your scenes, fun days and dates, made just for you.</div>
+      <div><b>You check the picture.</b>Reply to our email with any changes before we print.</div>
+      <div><b>Printed and laminated.</b><span id="dlv"></span></div>
+    </div>
+  </div>
+</main>
+<footer style="padding:20px 0 40px;color:var(--muted);font-size:14px">Cheet's Press. Questions? Email <a href="mailto:cheetspress@gmail.com">cheetspress@gmail.com</a>.</footer>
+</div>
+<script>
+(function(){
+  var SHOP={venmo:'jake-douglas-44', orderEmail:'cheetspress@gmail.com'};
+  function $(i){return document.getElementById(i);} function money(n){return '$'+Number(n).toFixed(2);}
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var o=null, h=location.hash.match(/o=([^&]+)/);
+  try{ if(h) o=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(h[1]))))); }catch(e){}
+  if(!o){ try{ o=JSON.parse(sessionStorage.getItem('cpOrder')); }catch(e){} }
+  if(!o||!o.email){ $('none').hidden=false; return; }
+  $('checkout').hidden=false;
+  var mail=o.delivery==='Mailed';
+  var rows=[['For',o.forName],['Months',o.months],['Design',o.design],['Delivery',o.delivery+(mail?'\n'+o.addr:'')],['Your name',o.name],['Email',o.email]];
+  if(o.phone) rows.push(['Phone',o.phone]);
+  $('olist').innerHTML=rows.map(function(r){return '<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>';}).join('');
+  $('lines').innerHTML='<div><span>Calendar ('+o.n+(o.n===1?' month':' months')+')</span><span>'+money(o.price)+'</span></div>'+(mail?'<div><span>Shipping</span><span>'+money(o.ship)+'</span></div>':'')+'<div class="tot"><span>Total</span><b>'+money(o.total)+'</b></div>';
+  if(mail){ $('cashCard').hidden=true; }
+  function pm(){ return document.querySelector('input[name=pm]:checked').value; }
+  function label(){ $('go').textContent = pm()==='venmo' ? 'Confirm and pay '+money(o.total)+' with Venmo' : 'Confirm order, pay cash at pickup'; }
+  document.querySelectorAll('input[name=pm]').forEach(function(r){ r.addEventListener('change',label); }); label();
+  $('pf').addEventListener('submit', function(e){ e.preventDefault();
+    var cash=pm()==='cash', oid='CP-'+String(Math.floor(1000+Math.random()*9000)), u=SHOP.venmo;
+    var vurl='https://venmo.com/'+encodeURIComponent(u)+'?txn=pay&amount='+Number(o.total).toFixed(2)+'&note='+encodeURIComponent("Cheet's Press "+oid);
+    if(!cash){ try{ window.open(vurl,'_blank','noopener'); }catch(err){} }
+    var b=$('go'); b.disabled=true; b.textContent='Confirming…'; $('msg').textContent='';
+    var auto='Thanks for your order! Your order number is '+oid+'.\n\n'+(cash?'You chose to pay '+money(o.total)+' in cash at pickup.':'Your total is '+money(o.total)+'. If you have not finished paying, send it on Venmo to @'+u+' with '+oid+' in the note.')+'\n\nWhat happens next: we design your calendar and email you a picture to check before we print. Reply to this email with any questions or changes.\n\n- Cheet\'s Press';
+    fetch('https://formsubmit.co/ajax/'+SHOP.orderEmail,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({_subject:'New order '+oid+' for '+o.forName+' ('+money(o.total)+', '+(cash?'cash':'Venmo')+')', _template:'box', _captcha:'false', _replyto:o.email, email:o.email,
+        _autoresponse:auto, Order:oid, Total:money(o.total)+(mail?' (includes '+money(o.ship)+' shipping)':''), Payment:cash?'Cash at pickup':'Venmo, look for '+oid+' in the note', Name:o.name, Phone:o.phone||'-', Details:'Order '+oid+'\n'+o.details})})
+    .then(function(r){return r.json();}).then(function(j){
+      if(String(j.success)!=='true') throw new Error(j.message||'');
+      try{ sessionStorage.removeItem('cpOrder'); history.replaceState(null,'',location.pathname+'#done'); }catch(err){}
+      $('checkout').hidden=true; $('done').hidden=false; $('oid').textContent=oid; $('em').textContent=o.email;
+      $('dlv').textContent = mail ? ' We mail it to you.' : ' We set up pickup or drop-off with you by email.';
+      if(cash){ $('doneText').textContent='Bring '+money(o.total)+' in cash when you pick it up.'; $('doneActs').innerHTML=''; }
+      else { $('doneText').textContent='Venmo opened in a new tab with '+money(o.total)+' and '+oid+' filled in. Finish paying there. We start once your payment comes in.';
+        $('doneActs').innerHTML='<a class="btn" target="_blank" rel="noopener" href="'+vurl+'">Venmo did not open? Pay '+money(o.total)+'</a>'; }
+      $('done').focus(); window.scrollTo(0,0);
+    }).catch(function(){ b.disabled=false; label(); $('msg').className='bad'; $('msg').textContent='Your order did not go through. Check your internet and tap Confirm again. If you already paid on Venmo, that is fine, we match it by the note.'; });
+  });
+})();
+</script></body></html>
