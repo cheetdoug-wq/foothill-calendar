@@ -113,6 +113,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 .lines .tot{font-weight:800;font-size:18px;align-items:baseline}.lines .tot b{font-family:var(--display);font-weight:400;font-size:36px;color:#e86f00}
 .pay{margin-top:18px}.pay .cards{margin-top:6px}
 .ok{text-align:left}.ok .big{font-family:var(--display);font-size:clamp(30px,5vw,44px);line-height:1.05;margin:0 0 8px}.oid{color:var(--orange)}
+.hold{background:#3a1d12;border:2px solid var(--orange);border-radius:16px;padding:14px 16px;margin:8px 0 4px;font-size:16px}.hold b{color:var(--orange)}
 .steps4{display:grid;gap:12px;margin-top:16px}.steps4 div{background:var(--plum);border:2px solid var(--line);border-radius:14px;padding:12px 14px}.steps4 b{display:block}
 .edit{color:var(--muted);font-size:14px}
 </style></head><body>
@@ -127,19 +128,20 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     <form id="pf" class="pay" novalidate>
       <fieldset><legend>How do you want to pay?</legend>
         <div class="cards">
-          <label class="card"><input type="radio" name="pm" value="venmo" checked><b>Venmo</b><span>Venmo opens with the amount and your order number filled in. Pay from your Venmo balance, bank or card.</span></label>
-          <label class="card" id="cashCard"><input type="radio" name="pm" value="cash"><b>Cash at pickup</b><span>Pay when you pick up your calendar.</span></label>
+          <label class="card"><input type="radio" name="pm" value="venmo" checked><b>Venmo</b><span>After you confirm, tap Pay on Venmo. The amount and your order number are filled in. Pay from your Venmo balance, bank or card.</span></label>
+          <label class="card" id="cashCard"><input type="radio" name="pm" value="cash"><b>Cash at pickup</b><span>We email you to set a pickup time and place, then you pay when you get it. Or email us at cheetspress@gmail.com.</span></label>
         </div>
       </fieldset>
       <div class="sum" style="margin-top:16px"><div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden"><label>Leave this empty <input type="text" id="hp" tabindex="-1" autocomplete="off"></label></div><p class="hint" style="margin:0 0 12px">By confirming, you agree to our <a href="/terms/">terms of sale</a> and <a href="/privacy/">privacy policy</a>.</p><div class="acts" style="margin-top:0"><button class="btn" id="go" type="submit">Confirm order</button></div><p class="hint" id="msg" role="status"></p></div>
     </form>
   </div>
   <div id="done" class="ok" hidden tabindex="-1">
-    <p class="big">Order <span class="oid" id="oid"></span> is confirmed.</p>
-    <p class="lede" id="doneText" style="margin:0"></p>
+    <p class="big" id="doneH"></p>
+    <div class="hold" id="hold"></div>
     <div class="acts" id="doneActs"></div>
     <div class="steps4">
-      <div><b>Check your email for progress.</b>We sent a confirmation to <span id="em"></span>. Updates and a picture of your calendar to check come there too. Not there? Look in spam or Promotions.</div>
+      <div id="step1"></div>
+      <div><b>Check your email for progress.</b>We sent your order details to <span id="em"></span>. Updates and a picture of your calendar to check come there too. Not there? Look in spam or Promotions. Questions? Email <a href="mailto:cheetspress@gmail.com">cheetspress@gmail.com</a>.</div>
       <div><b>We design it.</b>Your scenes, fun days and dates, made just for you.</div>
       <div><b>You check the picture.</b>Reply to our email with any changes before we print.</div>
       <div><b>Printed and laminated.</b><span id="dlv"></span></div>
@@ -165,28 +167,35 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   $('lines').innerHTML='<div><span>Calendar ('+o.n+(o.n===1?' month':' months')+')</span><span>'+money(o.price)+'</span></div>'+(mail?'<div><span>Shipping</span><span>'+money(o.ship)+'</span></div>':'')+'<div class="tot"><span>Total</span><b>'+money(o.total)+'</b></div>';
   if(mail){ $('cashCard').hidden=true; }
   function pm(){ return document.querySelector('input[name=pm]:checked').value; }
-  function label(){ $('go').textContent = pm()==='venmo' ? 'Confirm and pay '+money(o.total)+' with Venmo' : 'Confirm order, pay cash at pickup'; }
+  function label(){ $('go').textContent = pm()==='venmo' ? 'Confirm order, then pay '+money(o.total)+' on Venmo' : 'Confirm order, pay cash at pickup'; }
   document.querySelectorAll('input[name=pm]').forEach(function(r){ r.addEventListener('change',label); }); label();
   $('pf').addEventListener('submit', function(e){ e.preventDefault();
-    if($('hp').value){ $('checkout').hidden=true; $('done').hidden=false; $('oid').textContent='received'; return; }
+    if($('hp').value){ $('checkout').hidden=true; $('done').hidden=false; $('doneH').textContent='Thanks, we got it.'; return; }
     var cash=pm()==='cash', oid='CP-'+(function(d){return String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');})(new Date())+String(Math.floor(100+Math.random()*900)), u=SHOP.venmo;
     var vurl='https://venmo.com/'+encodeURIComponent(u)+'?txn=pay&amount='+Number(o.total).toFixed(2)+'&note='+encodeURIComponent("Cheet's Press "+oid);
-    if(!cash){ try{ window.open(vurl,'_blank','noopener'); }catch(err){} }
     var b=$('go'); b.disabled=true; b.textContent='Confirming…'; $('msg').textContent='';
-    var auto='Thanks for your order! Your order number is '+oid+'.\n\n'+(cash?'You chose to pay '+money(o.total)+' in cash at pickup.':'Your total is '+money(o.total)+'. If you have not finished paying, send it on Venmo to @'+u+' with '+oid+' in the note.')+'\n\nWhat happens next: we design your calendar and email you a picture to check before we print. Reply to this email with any questions or changes.\n\n- Cheet\'s Press';
+    var auto='Thanks for your order! Your order number is '+oid+'.\n\n'+(cash?'You chose to pay '+money(o.total)+' in cash at pickup. We will email you within 1 day to set a pickup time and place. You can also email us at cheetspress@gmail.com.':'Your order is on hold until your payment comes in. Send '+money(o.total)+' on Venmo to @'+u+' with '+oid+' in the note. Unpaid orders are canceled after 2 days.')+'\n\nWhat happens next: once '+(cash?'pickup is set':'your payment comes in')+', we design your calendar and email you a picture to check before we print. Reply to this email with any questions or changes.\n\n- Cheet\'s Press';
     fetch('https://formsubmit.co/ajax/'+SHOP.orderEmail,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({_subject:'New order '+oid+' for '+o.forName+' ('+money(o.total)+', '+(cash?'cash':'Venmo')+')', _template:'box', _captcha:'false', _honey:$('hp').value, _replyto:o.email, email:o.email,
-        _autoresponse:auto, Order:oid, Total:money(o.total)+(mail?' (includes '+money(o.ship)+' shipping)':''), Payment:cash?'Cash at pickup':'Venmo, look for '+oid+' in the note', Name:o.name, Phone:o.phone||'-', Details:'Order '+oid+'\n'+o.details})})
+      body:JSON.stringify({_subject:'New order '+oid+' for '+o.forName+' ('+money(o.total)+', '+(cash?'cash, set up pickup':'Venmo, UNPAID until you see it')+')', _template:'box', _captcha:'false', _honey:$('hp').value, _replyto:o.email, email:o.email,
+        _autoresponse:auto, Order:oid, Total:money(o.total)+(mail?' (includes '+money(o.ship)+' shipping)':''), Payment:cash?'Cash at pickup. Email them to set a time and place.':'Venmo. Not paid until you see '+money(o.total)+' with '+oid+' in the note. Cancel after 2 days if it never comes.', Name:o.name, Phone:o.phone||'-', Details:'Order '+oid+'\n'+o.details})})
     .then(function(r){return r.json();}).then(function(j){
       if(String(j.success)!=='true') throw new Error(j.message||'');
       try{ sessionStorage.removeItem('cpOrder'); sessionStorage.removeItem('cpForm'); history.replaceState(null,'',location.pathname+'#done'); }catch(err){}
-      $('checkout').hidden=true; $('done').hidden=false; $('oid').textContent=oid; $('em').textContent=o.email;
-      $('dlv').textContent = mail ? ' We mail it to you.' : ' We set up pickup or drop-off with you by email.';
-      if(cash){ $('doneText').textContent='Bring '+money(o.total)+' in cash when you pick it up.'; $('doneActs').innerHTML=''; }
-      else { $('doneText').textContent='Venmo opened in a new tab with '+money(o.total)+' and '+oid+' filled in. Finish paying there. We start once your payment comes in.';
-        $('doneActs').innerHTML='<a class="btn" target="_blank" rel="noopener" href="'+vurl+'">Venmo did not open? Pay '+money(o.total)+'</a>'; }
+      $('checkout').hidden=true; $('done').hidden=false; $('em').textContent=o.email;
+      $('dlv').textContent = mail ? ' We mail it to you.' : ' You pick it up, or we drop it off nearby.';
+      if(cash){
+        $('doneH').innerHTML='Order <span class="oid">'+oid+'</span> is saved.';
+        $('hold').innerHTML='<b>Next: we set up pickup.</b> We will email you within 1 day to pick a time and place. You can also email us at <a href="mailto:cheetspress@gmail.com?subject='+encodeURIComponent('Pickup for '+oid)+'">cheetspress@gmail.com</a>. Bring <b>'+money(o.total)+'</b> in cash. We start designing once pickup is set.';
+        $('doneActs').innerHTML='';
+        $('step1').innerHTML='<b>We set up pickup by email.</b>Watch for our email, or email us first at cheetspress@gmail.com.';
+      } else {
+        $('doneH').innerHTML='Almost done: pay to confirm order <span class="oid">'+oid+'</span>.';
+        $('hold').innerHTML='<b>Your order is on hold until your payment comes in.</b> Send <b>'+money(o.total)+'</b> on Venmo to <b>@'+esc(u)+'</b> with <b>'+oid+'</b> in the note. We do not start without it, and unpaid orders are canceled after 2 days.';
+        $('doneActs').innerHTML='<a class="btn" target="_blank" rel="noopener" href="'+vurl+'">Pay '+money(o.total)+' on Venmo</a>';
+        $('step1').innerHTML='<b>We see your payment.</b>We match it by the order number in your Venmo note, then email you that your order is confirmed.';
+      }
       $('done').focus(); window.scrollTo(0,0);
-    }).catch(function(){ b.disabled=false; label(); $('msg').className='bad'; $('msg').textContent='Your order did not go through. Check your internet and tap Confirm again. If you already paid on Venmo, that is fine, we match it by the note.'; });
+    }).catch(function(){ b.disabled=false; label(); $('msg').className='bad'; $('msg').textContent='Your order did not go through. Check your internet and tap Confirm again. Do not pay until your order goes through.'; });
   });
 })();
 </script></body></html>
