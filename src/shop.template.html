@@ -98,7 +98,7 @@ textarea{min-height:76px;resize:vertical}
 .soon{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
 .soon div{border:2px dashed var(--line);border-radius:18px;padding:18px;color:var(--muted)} .soon b{color:var(--ink);display:block;font-size:18px}
 footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);color:var(--muted);font-size:14px}
-.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.gal figure{margin:0}.gal img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 14px 30px rgba(0,0,0,.45);transform:rotate(-1deg)}.gal figure:nth-child(2) img{transform:rotate(1.2deg)}.gal figcaption{margin-top:10px;font-weight:700;font-size:14px;opacity:.85}.faq{display:grid;gap:10px}.faq details{background:var(--plum);border:2px solid var(--line);border-radius:14px;padding:12px 16px}.faq summary{cursor:pointer;font-weight:800;font-size:17px}.faq p{margin:8px 0 2px;color:var(--muted)}footer a{color:var(--muted)}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.gal figure{margin:0}.gal img{display:block;width:100%;height:auto;border-radius:6px;background:#fbf8f0;box-shadow:0 14px 30px rgba(0,0,0,.45);transform:rotate(-1deg)}.gal figure:nth-child(2) img{transform:rotate(1.2deg)}.gal figcaption{margin-top:10px;font-weight:700;font-size:14px;opacity:.85}.faq{display:grid;gap:10px}.faq details{background:var(--plum);border:2px solid var(--line);border-radius:14px;padding:12px 16px}.faq summary{cursor:pointer;font-weight:800;font-size:17px}.faq p{margin:8px 0 2px;color:var(--muted)}footer a{color:var(--muted)}
 .ck{position:fixed;left:12px;right:12px;bottom:12px;z-index:50;max-width:560px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;background:var(--cream);color:#24122e;border-radius:16px;padding:10px 12px 10px 16px;box-shadow:0 14px 40px rgba(0,0,0,.5);font-weight:600;font-size:14px}.ck a{color:#b04a00}.ck[hidden]{display:none}
 .btn{white-space:nowrap}@media (max-width:460px){header.bar .btn{padding:9px 14px;font-size:14px}}
 @media (max-width:860px){.gal{grid-template-columns:1fr}}
@@ -113,7 +113,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   <div>
     <h1>Calendars <em>that</em> move.</h1>
     <p class="lede">A custom calendar page, <b>printed and laminated by hand</b> in the California foothills. Every week has its own picture and a QR code. Scan it and that week comes alive on your phone.</p>
-    <div class="cta"><a class="btn" href="#build">Build yours</a><span class="price">1 month $5 · 3 months $8 · full year $14</span></div>
+    <div class="cta"><a class="btn" href="#build">Build yours</a><span class="price">1 month $4 · 3 months $7 · full year $12</span></div>
   </div>
   <div class="demo"><div class="stage" id="demo"></div><div class="chips" id="chips" role="group" aria-label="Pick a scene to watch"></div></div>
 </div>
@@ -127,11 +127,11 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   </div>
 </section>
 
-<section id="made"><h2>Real ones we've made</h2><p class="lede" style="margin:0 0 14px">Printed and laminated here, photographed on the kitchen table. Names and private dates are blurred. The front has the month and a picture for every week. The back has a QR code for each week and what to do on the special days. <a href="/o/sample/">Watch a sample calendar move →</a></p>
+<section id="made"><h2>See what you get</h2><p class="lede" style="margin:0 0 14px">Pages from our sample calendar. The front has the month and a picture for every week. The back has a QR code for each week and what to do on the special days. <a href="/o/sample/">Watch the sample calendar move →</a></p>
 <div class="gal">
-  <figure><img src="img/nov.jpg" alt="Printed November calendar page with an autumn meadow banner and Cheet running past a fence" loading="lazy" width="1388" height="1100"><figcaption>Front · November</figcaption></figure>
-  <figure><img src="img/dec.jpg" alt="Printed December calendar page with a snowy cabin, Christmas tree and owl banner" loading="lazy" width="1400" height="1066"><figcaption>Front · December</figcaption></figure>
-  <figure><img src="img/back.jpg" alt="Back of the November page with a QR code and what-to-do notes for each week" loading="lazy" width="1400" height="1027"><figcaption>Back · QR codes and what to do</figcaption></figure>
+  <figure><img src="img/sample-jan.jpg" alt="Sample January calendar page with a snowy cabin and owl banner and a picture for every week" loading="lazy" width="1400" height="1082"><figcaption>Front · January</figcaption></figure>
+  <figure><img src="img/sample-mar.jpg" alt="Sample March calendar page with a spring meadow banner and blossoms" loading="lazy" width="1400" height="1082"><figcaption>Front · March</figcaption></figure>
+  <figure><img src="img/sample-back.jpg" alt="Back of the sample February page with a QR code and what to do for each week" loading="lazy" width="1400" height="1082"><figcaption>Back · QR codes and what to do</figcaption></figure>
 </div></section>
 <section id="build"><h2>Build your calendar</h2><p class="lede" style="margin:0">Answer five quick questions. We design your calendar after you order.</p>
 <div class="build">
@@ -140,7 +140,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
       <label for="forName">Calendar is for</label><input type="text" id="forName" placeholder="Their name" autocomplete="off">
       <label id="mlab">Tap the months you want</label>
       <div class="mchips" id="mchips" role="group" aria-labelledby="mlab"></div>
-      <div class="macts"><button type="button" class="btn ghost sm" id="threeM">3 months · $8</button><button type="button" class="btn ghost sm" id="fullYear">Full year · $14</button><button type="button" class="btn ghost sm" id="clearM">Just one month · $5</button></div>
+      <div class="macts"><button type="button" class="btn ghost sm" id="threeM">3 months · $7</button><button type="button" class="btn ghost sm" id="fullYear">Full year · $12</button><button type="button" class="btn ghost sm" id="clearM">Just one month · $4</button></div>
       <p class="hint">Each month is its own page.</p>
     </fieldset>
     <fieldset><legend>2. Do you want to describe your months?</legend>
@@ -178,7 +178,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
       <p class="hint">We email your order updates and a picture of your calendar to check before printing. We only use your info for your order. <a href="/privacy/">Privacy policy</a>.</p>
     </fieldset>
     <div class="sum">
-      <div class="total"><span id="sumLine"></span><b id="total">$5.00</b></div><p class="hint" id="dealHint" style="margin:6px 0 0;color:var(--orange)"></p>
+      <div class="total"><span id="sumLine"></span><b id="total">$4.00</b></div><p class="hint" id="dealHint" style="margin:6px 0 0;color:var(--orange)"></p>
       <div class="acts"><button type="submit" class="btn" id="finish">Continue to checkout →</button></div>
       <p id="msg" role="status"></p>
     </div>
@@ -186,7 +186,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   <aside class="preview" aria-label="Your order">
     <h3 class="ah">Your order</h3>
     <dl class="olist" id="olist"></dl>
-    <div class="ototal"><span>Total</span><b id="ototal">$5.00</b></div>
+    <div class="ototal"><span>Total</span><b id="ototal">$4.00</b></div>
     <h3 class="ah" style="margin-top:20px">What happens next</h3>
     <ol class="next">
       <li><b>Check out.</b> Review your order, pay with Venmo or cash at pickup, and it comes straight to us.</li>
@@ -235,14 +235,14 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   /* months: the next 12 */
   var now = new Date(), months = [];
   for (var k=1;k<=12;k++){ var d=new Date(now.getFullYear(), now.getMonth()+k, 1); months.push({y:d.getFullYear(), m:d.getMonth(), on:k===1, desc:''}); }
-  var st = { act:0, week:0, dates:[{mi:0,d:'',t:''}], total:5 }, shown=-1;
+  var st = { act:0, week:0, dates:[{mi:0,d:'',t:''}], total:4 }, shown=-1;
   function picked(){ return months.filter(function(x){return x.on;}); }
   function nd(c){ return new Date(c.y,c.m+1,0).getDate(); }
   function label(c){ return MON[c.m]+' '+c.y; }
   function describing(){ return $('modeDesc').checked; }
-  function base(n){ return n>=12?14:Math.min(Math.floor(n/3)*8+(n%3)*5, Math.ceil(n/3)*8, 14); }
+  function base(n){ return n>=12?12:Math.min(Math.floor(n/3)*7+(n%3)*4, Math.ceil(n/3)*7, 12); }
   function price(n){ return base(n)+(describing()?0.5*n:0); }
-  function dealHint(n){ if(n===2) return 'Add 1 more month, it is the same price.'; if(n>=5&&n<12&&base(n)===14) return 'That is the same price as the full year. Tap Full year to get all 12.'; return ''; }
+  function dealHint(n){ if(n===2) return 'Add 1 more month, it is the same price.'; if(n>=5&&n<12&&base(n)===12) return 'That is the same price as the full year. Tap Full year to get all 12.'; return ''; }
   function shipFor(n){ return n>=5?6:3; }
   function money(n){ return '$'+n.toFixed(2); }
   function useDates(){ return $('datesYes').checked; }

@@ -70,7 +70,7 @@ months.forEach(M => {
 /* ---------- online animation page ---------- */
 const hide = !!O.hideNamesOnline;
 const pubName = hide ? 'Your calendar' : O.forName;
-const pubWeeks = weeks.map(w => ({ def: w.def, range: w.range + ', ' + w.month.y, list: w.list.map(d => (hide && d.kind === 'real' && (O.dates || []).some(x => x.month === w.month.key && x.day === d.n)) ? Object.assign({}, d, { name: 'Special day', short: 'Special day', todo: 'A day that matters to the people on this calendar.' }) : d) }));
+const pubWeeks = weeks.map(w => ({ def: w.def, range: w.range + ', ' + w.month.y, start: [w.month.y, w.month.m, w.list[0].n], startLabel: MON[w.month.m] + ' ' + w.list[0].n, list: w.list.map(d => (hide && d.kind === 'real' && (O.dates || []).some(x => x.month === w.month.key && x.day === d.n)) ? Object.assign({}, d, { name: 'Special day', short: 'Special day', todo: 'A day that matters to the people on this calendar.' }) : d) }));
 const engineSrc = fs.readFileSync(path.join(__dirname, 'engine.js'), 'utf8');
 const anim = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -100,6 +100,7 @@ h2{font-size:22px;margin:8px 0 0}
 .todo{display:grid;gap:10px;margin:0;padding:0;list-style:none}.todo li{background:var(--panel);border-left:5px solid var(--leaf);border-radius:10px;padding:12px 14px}.todo li.real{border-left-color:var(--gold)}
 .todo b{display:block;font-size:16px}.todo .when{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}.todo p{margin:4px 0 0;color:#d9dfd3;max-width:65ch}
 footer{color:var(--muted);font-size:13px}footer a{color:var(--gold)}
+.ask{position:fixed;inset:0;background:rgba(0,0,0,.6);display:grid;place-items:center;padding:20px;z-index:20}.ask[hidden]{display:none}.askb{background:var(--panel);border:2px solid var(--gold);border-radius:18px;padding:22px;max-width:380px}.askb h3{margin:0 0 6px;font-size:22px}.askb p{margin:6px 0;color:#d9dfd3}.askacts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.askacts button{font:700 15px Figtree,sans-serif;border-radius:999px;padding:10px 16px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}.askacts .go{background:var(--gold);color:#1b1405;border-color:var(--gold)}
 ${C.CSS}
 </style></head><body><main>
 <header><div class="eyebrow">${esc(pubName)} · <span id="range"></span></div><h1 id="title"></h1><p class="sub" id="sub"></p></header>
@@ -107,6 +108,7 @@ ${C.CSS}
 <nav aria-label="Weeks"><a id="prev" href="#week-1">Back</a><div class="dots" id="dots"></div><a id="next" href="#week-2">Next</a></nav>
 <ul class="days" id="days"></ul>
 <h2>What to do this week</h2><ul class="todo" id="todo"></ul>
+<div class="ask" id="ask" hidden role="dialog" aria-modal="true" aria-labelledby="askH"><div class="askb"><h3 id="askH">No peeking?</h3><p id="askT"></p><p>Want to see it early, or keep it a surprise?</p><div class="askacts"><button type="button" id="askNo">Keep it a surprise</button><button type="button" id="askGo" class="go">Peek anyway</button></div></div></div>
 <footer>Green days are made up for fun. Gold days are birthdays, holidays and special days. Made by <a href="/">Cheet's Press</a>.</footer>
 </main>
 <script>${engineSrc}</script>
@@ -114,7 +116,9 @@ ${C.CSS}
 (function(){
   var W=${JSON.stringify(pubWeeks)}, $=function(i){return document.getElementById(i)};
   function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
-  function pick(){ var m=/^#week-(\\d+)$/.exec(location.hash); if(m&&W[m[1]-1]) return m[1]-1; return 0; }
+  function sd(w){ return new Date(w.start[0],w.start[1],w.start[2]); }
+  function today(){ var t=new Date(),k=0; W.forEach(function(w,i){ if(t>=sd(w)) k=i; }); return k; }
+  function pick(){ var m=/^#week-(\\d+)$/.exec(location.hash); if(m&&W[m[1]-1]) return m[1]-1; return today(); }
   function show(){
     var i=pick(), w=W[i];
     $('range').textContent=w.range; $('title').textContent=w.def.title; $('sub').textContent=w.def.sub;
@@ -126,7 +130,15 @@ ${C.CSS}
     var t=w.list.filter(function(d){return d.name});
     $('todo').innerHTML=t.length?t.map(function(d){return '<li class="'+d.kind+'"><span class="when">'+d.dow+', '+d.mon+' '+d.n+'</span><b>'+esc(d.name)+'</b><p>'+esc(d.todo)+'</p></li>'}).join(''):'<li><b>A quiet week.</b><p>Get outside once and look around.</p></li>';
   }
-  window.addEventListener('hashchange',function(){show();window.scrollTo(0,0)}); show();
+  var cur=pick(), ok={};
+  document.addEventListener('click',function(e){ var a=e.target.closest('a[href^="#week-"]'); if(!a) return;
+    var j=+a.getAttribute('href').slice(6)-1, w=W[j]; if(!w||ok[j]||sd(w)<=new Date()) return;
+    e.preventDefault(); $('ask').hidden=false; $('askT').textContent='Week '+(j+1)+' starts '+w.startLabel+'.';
+    $('askGo').onclick=function(){ ok[j]=1; $('ask').hidden=true; location.hash='#week-'+(j+1); };
+    $('askGo').focus(); });
+  $('askNo').onclick=function(){ $('ask').hidden=true; };
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') $('ask').hidden=true; });
+  window.addEventListener('hashchange',function(){cur=pick();show();window.scrollTo(0,0)}); show();
 })();
 </script></body></html>`;
 const siteDir = path.join(__dirname, '..', 'o', slug); fs.mkdirSync(siteDir, { recursive: true });
