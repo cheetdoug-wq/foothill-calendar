@@ -43,3 +43,8 @@ Print: 11 x 8.5 landscape, double-sided, flip on the short edge. Each month is o
 `reels/post.html` ("November, as scheduled by my dog") and `reels/post2.html` ("I gave my dog access to the calendar").
     python3 maker/reels/render-post.py out.png          # post.html
     python3 maker/reels/render-post.py post2 out.png    # post2.html
+
+## Business cards
+`reels/cards.html` — 10 cards on one Letter sheet, two columns edge to edge, black ink only.
+    python3 maker/reels/render-cards.py cards.pdf   # also writes cards.png
+Cut once down the middle, then straight across the four dashed lines.
