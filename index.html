@@ -203,7 +203,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     </fieldset>
     <fieldset><legend>4. How do you want to get it?</legend>
       <div class="cards">
-        <label class="card"><input type="radio" name="del" id="delPickup" value="pickup" checked><b>Local pickup or drop-off</b><span>Free, for people nearby. Pay on Venmo or with cash when you get it.</span></label>
+        <label class="card"><input type="radio" name="del" id="delPickup" value="pickup" checked><b>Local pickup or drop-off</b><span>Free, for people nearby. Pay on Venmo, or cash when you get it.</span></label>
         <label class="card"><input type="radio" name="del" id="delMail" value="mail"><b>Mailed in the US</b><span>Shipping is extra. We tell you the cost before you pay.</span></label>
       </div>
       <div id="addrBox" hidden><label for="addr">Mailing address</label><textarea id="addr" autocomplete="street-address"></textarea></div>
@@ -214,18 +214,18 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     </fieldset>
     <div class="sum">
       <div class="total"><span id="sumLine"></span><b id="total">$5.00</b></div><p class="hint" id="dealHint" style="margin:6px 0 0;color:var(--orange)"></p>
-      <div class="acts"><button type="submit" class="btn" id="finish">Finish my order</button></div>
+      <div class="acts"><button type="submit" class="btn" id="finish">Place my order</button></div>
       <p id="msg" role="status"></p>
     </div>
     <div class="sum" id="send" hidden tabindex="-1">
-      <h3 id="sendTitle">Almost done</h3>
+      <h3 id="sendTitle"></h3>
       <p id="sendText" class="hint"></p>
-      <div class="steps3">
-        <div class="step3"><h4><span class="n">1</span>Send us your order</h4><p class="hint" id="s1"></p><div class="acts" id="sendActs"></div><p id="copyMsg" role="status" class="hint"></p></div>
+      <div class="steps3" id="steps">
+        <div class="step3"><h4><span class="n">✓</span>Order received</h4><p class="hint" id="s1"></p></div>
         <div class="step3"><h4><span class="n">2</span>Pay</h4><p class="hint" id="s2"></p><div class="acts" id="payActs"></div></div>
-        <div class="step3"><h4><span class="n">3</span>We make it</h4><p class="hint">When your email and payment come in, we design your calendar and send you a picture to check before we print. Questions? Email <b id="mailShow"></b>.</p></div>
+        <div class="step3"><h4><span class="n">3</span>We make it</h4><p class="hint">Once your payment comes in, we design your calendar and send you a picture to check before we print. Questions? Email <b id="mailShow"></b>.</p></div>
       </div>
-      <details style="margin-top:12px"><summary class="hint">See the order text</summary><textarea id="orderText" readonly aria-label="Your order"></textarea></details>
+      <div id="fallback" hidden><div class="acts" id="sendActs"></div><p id="copyMsg" role="status" class="hint"></p><textarea id="orderText" readonly aria-label="Your order"></textarea></div>
     </div>
   </form>
   <aside class="preview" aria-label="Your order">
@@ -234,8 +234,8 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     <div class="ototal"><span>Total</span><b id="ototal">$5.00</b></div>
     <h3 class="ah" style="margin-top:20px">What happens next</h3>
     <ol class="next">
-      <li><b>You send the order.</b> One tap opens your email with everything filled in.</li>
-      <li><b>You pay.</b> Venmo, or cash at pickup. Mailed orders get the shipping total first.</li>
+      <li><b>Place your order.</b> It comes straight to us. No email needed.</li>
+      <li><b>Pay.</b> The Venmo button fills in the exact amount. Cash at pickup works too. Mailed orders get the shipping total first.</li>
       <li><b>We design it.</b> New scenes and fun days made just for you. We send a picture to check before printing.</li>
       <li><b>Printed and laminated.</b> Picked up, dropped off, or mailed.</li>
     </ol>
@@ -614,22 +614,38 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     if($('delMail').checked && !$('addr').value.trim()) miss.push('a mailing address');
     if(miss.length){ m.className='bad'; m.textContent='Still needed: '+miss.join(', ')+'.'; $('send').hidden=true; return; }
     m.className=''; m.textContent='';
-    var oid='CP-'+String(Math.floor(1000+Math.random()*9000)), local=$('delPickup').checked, who=$('forName').value.trim(), t='Order '+oid+'\n'+orderText();
+    var oid='CP-'+String(Math.floor(1000+Math.random()*9000)), local=$('delPickup').checked, who=$('forName').value.trim(), t='Order '+oid+'\n'+orderText(), total=st.total;
     $('orderText').value=t; $('copyMsg').textContent=''; $('mailShow').textContent=SHOP.orderEmail;
-    $('sendTitle').innerHTML='Almost done. Your order number is <span class="oid">'+oid+'</span>';
-    $('sendText').textContent='Your order is not placed until we get your email.';
-    $('s1').textContent='Tap the button to open your email with the order filled in, then hit send. No email app? Copy the order and send it to '+SHOP.orderEmail+'.';
-    $('sendActs').innerHTML='<a class="btn" id="mailBtn" href="mailto:'+esc(SHOP.orderEmail)+'?subject='+encodeURIComponent("Cheet's Press order "+oid+" for "+who)+'&body='+encodeURIComponent(t)+'">Email my order</a><button type="button" class="btn ghost" id="copyBtn">Copy the order</button>';
-    var u=(SHOP.venmo||'').replace(/^@/,'');
-    if(!u){ $('s2').textContent='You pay when you get your calendar.'; $('payActs').innerHTML=''; }
-    else if(local){
-      $('s2').innerHTML='Pay <b>'+money(st.total)+'</b> on Venmo to <b>@'+esc(u)+'</b> with your order number in the note, or pay with cash when you pick it up.';
-      $('payActs').innerHTML='<a class="btn" id="venmoBtn" target="_blank" rel="noopener" href="https://venmo.com/'+encodeURIComponent(u)+'?txn=pay&amount='+st.total.toFixed(2)+'&note='+encodeURIComponent("Cheet's Press "+oid)+'">Pay '+money(st.total)+' on Venmo</a>';
-    } else {
-      $('s2').innerHTML='Mailed orders pay after we reply with the shipping cost. We send you the full total and a Venmo link to <b>@'+esc(u)+'</b>.';
-      $('payActs').innerHTML='';
+    var btn=$('finish'); btn.disabled=true; btn.textContent='Sending your order…';
+    function done(ok, why){
+      btn.disabled=false; btn.textContent='Place my order';
+      $('send').hidden=false;
+      if(ok){
+        $('steps').hidden=false; $('fallback').hidden=true;
+        $('sendTitle').innerHTML='Thank you! Order <span class="oid">'+oid+'</span> is in.';
+        $('sendText').textContent='Keep this number. It goes in your Venmo note so we can match your payment.';
+        $('s1').textContent='We got your order for '+who+'. We will reach you at '+$('contact').value.trim()+'.';
+        var u=(SHOP.venmo||'').replace(/^@/,'');
+        if(local){
+          $('s2').innerHTML='Pay <b>'+money(total)+'</b> to <b>@'+esc(u)+'</b>. The button fills in the amount and your order number. Or pay with cash when you pick it up.';
+          $('payActs').innerHTML='<a class="btn" id="venmoBtn" target="_blank" rel="noopener" href="https://venmo.com/'+encodeURIComponent(u)+'?txn=pay&amount='+total.toFixed(2)+'&note='+encodeURIComponent("Cheet's Press "+oid)+'">Pay '+money(total)+' with Venmo</a>';
+        } else {
+          $('s2').innerHTML='We will email you the shipping cost and the full total, with a Venmo link to <b>@'+esc(u)+'</b>. No need to pay yet.';
+          $('payActs').innerHTML='';
+        }
+      } else {
+        $('steps').hidden=true; $('fallback').hidden=false;
+        $('sendTitle').textContent='We could not send your order';
+        $('sendText').textContent=(why||'Something went wrong.')+' Send it to '+SHOP.orderEmail+' instead, and we will take it from there.';
+        $('sendActs').innerHTML='<a class="btn" href="mailto:'+esc(SHOP.orderEmail)+'?subject='+encodeURIComponent("Cheet's Press order "+oid+" for "+who)+'&body='+encodeURIComponent(t)+'">Email my order</a><button type="button" class="btn ghost" id="copyBtn">Copy the order</button>';
+      }
+      $('send').focus(); $('send').scrollIntoView({block:'start'});
     }
-    $('send').hidden=false; $('send').focus(); $('send').scrollIntoView({block:'start'});
+    fetch('https://formsubmit.co/ajax/'+SHOP.orderEmail, {method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify({_subject:"New order "+oid+" for "+who+" ("+money(total)+(local?'':' + shipping')+")", _template:'box', _captcha:'false', Order:oid, Total:money(total)+(local?'':' plus shipping'), Name:$('buyer').value.trim(), Contact:$('contact').value.trim(), Details:t})})
+      .then(function(r){ return r.json(); })
+      .then(function(j){ done(String(j.success)==='true', j.message); })
+      .catch(function(){ done(false, 'Your connection dropped.'); });
   });
   $('send').addEventListener('click', function(e){ if(!e.target.closest('#copyBtn')) return; var box=$('orderText'), c=$('copyMsg');
     function no(){ box.focus(); box.select(); c.textContent='Select the order text and copy it.'; }
