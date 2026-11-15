@@ -93,6 +93,7 @@ textarea{min-height:76px;resize:vertical}
 .soon{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
 .soon div{border:2px dashed var(--line);border-radius:18px;padding:18px;color:var(--muted)} .soon b{color:var(--ink);display:block;font-size:18px}
 footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);color:var(--muted);font-size:14px}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.gal figure{margin:0}.gal img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 14px 30px rgba(0,0,0,.45);transform:rotate(-1deg)}.gal figure:nth-child(2) img{transform:rotate(1.2deg)}.gal figcaption{margin-top:10px;font-weight:700;font-size:14px;opacity:.85}@media (max-width:860px){.gal{grid-template-columns:1fr}}
 @media (max-width:860px){.hero,.build{grid-template-columns:1fr}.steps,.soon{grid-template-columns:1fr}.demo{transform:none}.preview{position:static;order:-1}}
 @media (max-width:460px){.drow3{grid-template-columns:1fr 1fr 44px}.drow3 input{grid-column:1/3;grid-row:2}.cards,.two{grid-template-columns:1fr}.mchips{grid-template-columns:repeat(4,1fr)}}
 @media (prefers-reduced-motion:reduce){.runner{animation:none}html{scroll-behavior:auto}}
@@ -148,7 +149,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   <div>
     <h1>Calendars <em>that</em> move.</h1>
     <p class="lede">A custom calendar page, <b>printed and laminated by hand</b> in the California foothills. Every week has its own picture and a QR code. Scan it and that week comes alive on your phone.</p>
-    <div class="cta"><a class="btn" href="#build">Build yours</a><span class="price">$5.00 a month · $5.50 if you describe them · one month or a full year</span></div>
+    <div class="cta"><a class="btn" href="#build">Build yours</a><span class="price">1 month $5 · 3 months $8 · full year $14</span></div>
   </div>
   <div class="demo"><div class="stage" id="demo"></div><div class="chips" id="chips" role="group" aria-label="Pick a scene to watch"></div></div>
 </div>
@@ -162,6 +163,12 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   </div>
 </section>
 
+<section id="made"><h2>Real ones we've made</h2><p class="lede" style="margin:0 0 14px">Printed and laminated here, photographed on the kitchen table. The front has the month and a picture for every week. The back has a QR code for each week and what to do on the special days.</p>
+<div class="gal">
+  <figure><img src="img/nov.jpg" alt="Printed November calendar page with an autumn meadow banner and Cheet running past a fence" loading="lazy" width="1388" height="1100"><figcaption>Front · November</figcaption></figure>
+  <figure><img src="img/dec.jpg" alt="Printed December calendar page with a snowy cabin, Christmas tree and owl banner" loading="lazy" width="1400" height="1066"><figcaption>Front · December</figcaption></figure>
+  <figure><img src="img/back.jpg" alt="Back of the November page with a QR code and what-to-do notes for each week" loading="lazy" width="1400" height="1027"><figcaption>Back · QR codes and what to do</figcaption></figure>
+</div></section>
 <section id="build"><h2>Build your calendar</h2><p class="lede" style="margin:0">The preview updates as you fill this in.</p>
 <div class="build">
   <form id="f" novalidate>
@@ -169,13 +176,13 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
       <label for="forName">Calendar is for</label><input type="text" id="forName" placeholder="Their name" autocomplete="off">
       <label id="mlab">Tap the months you want</label>
       <div class="mchips" id="mchips" role="group" aria-labelledby="mlab"></div>
-      <div class="macts"><button type="button" class="btn ghost sm" id="fullYear">Pick the full year</button><button type="button" class="btn ghost sm" id="clearM">Just one month</button></div>
+      <div class="macts"><button type="button" class="btn ghost sm" id="threeM">3 months · $8</button><button type="button" class="btn ghost sm" id="fullYear">Full year · $14</button><button type="button" class="btn ghost sm" id="clearM">Just one month · $5</button></div>
       <p class="hint">Each month is its own page.</p>
     </fieldset>
     <fieldset><legend>2. Do you want to describe your months?</legend>
       <div class="cards">
-        <label class="card"><input type="radio" name="mode" id="modeMake" value="make" checked><span class="p">$5.00 a month</span><b>No, make them for me</b><span>We pick the scenes and the look.</span></label>
-        <label class="card"><input type="radio" name="mode" id="modeDesc" value="desc"><span class="p">$5.50 a month</span><b>Yes, I'll describe them</b><span>Tell us what each month should look like.</span></label>
+        <label class="card"><input type="radio" name="mode" id="modeMake" value="make" checked><span class="p">Included</span><b>No, make them for me</b><span>We pick the scenes and the look.</span></label>
+        <label class="card"><input type="radio" name="mode" id="modeDesc" value="desc"><span class="p">+50¢ a month</span><b>Yes, I'll describe them</b><span>Tell us what each month should look like.</span></label>
       </div>
       <div id="descBox" hidden>
         <p class="hint">Write a few words for each month. Leave one blank and we will pick for that month.</p>
@@ -205,7 +212,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
       <div><label for="contact">Email or phone</label><input type="text" id="contact" autocomplete="email"></div></div>
     </fieldset>
     <div class="sum">
-      <div class="total"><span id="sumLine"></span><b id="total">$5.00</b></div>
+      <div class="total"><span id="sumLine"></span><b id="total">$5.00</b></div><p class="hint" id="dealHint" style="margin:6px 0 0;color:var(--orange)"></p>
       <div class="acts"><button type="submit" class="btn" id="finish">Finish my order</button><span id="payWrap"></span></div>
       <p id="msg" role="status"></p>
       <p class="hint" id="payHint"></p>
@@ -506,7 +513,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 <script>
 (function(){
   /* ---- shop settings: fill these in when they exist ---- */
-  var SHOP = { stripe: '', venmo: '', orderEmail: 'cheetspress@gmail.com' };
+  var SHOP = { stripe: '', venmo: 'Jakedouglas', orderEmail: 'cheetspress@gmail.com' };
 
   var $ = function(i){ return document.getElementById(i); };
   var SCENES = ['Autumn oaks and zoomies','Golden hour turkeys','Sunset hawk over the river','Frosty morning deer','Otter under the stars','Snowy solstice','Full moon, owl and cabin','Fireworks and a fox'];
@@ -532,7 +539,9 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   function nd(c){ return new Date(c.y,c.m+1,0).getDate(); }
   function label(c){ return MON[c.m]+' '+c.y; }
   function describing(){ return $('modeDesc').checked; }
-  function each(){ return describing()?5.5:5; }
+  function base(n){ return n>=12?14:Math.min(Math.floor(n/3)*8+(n%3)*5, Math.ceil(n/3)*8, 14); }
+  function price(n){ return base(n)+(describing()?0.5*n:0); }
+  function dealHint(n){ if(n===2) return 'Add 1 more month, it is the same price.'; if(n>=5&&n<12&&base(n)===14) return 'That is the same price as the full year. Tap Full year to get all 12.'; return ''; }
   function money(n){ return '$'+n.toFixed(2); }
   function useDates(){ return $('datesYes').checked; }
   function funOn(){ return !useDates() || $('alsoFun').checked; }
@@ -566,8 +575,9 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     $('pName').textContent=$('forName').value.trim()||'Their name'; $('pMonth').textContent=label(c)+' · week '+(st.week+1);
     if(force||key!==shown){ shown=key; $('pstage').innerHTML=CAL.scene(key,{par:'xMidYMid slice',uid:'p'}); }
     $('pnote').textContent = (describing() ? 'Your months get designed around what you describe. This picture is a stand-in. ' : 'Example scenes and fun days. Yours get made fresh. ') + 'Tap a week to see its scene.';
-    st.total=P.length*each();
-    $('sumLine').textContent = (P.length===12?'Full year, 12 months':P.length+(P.length===1?' month':' months'))+' at '+money(each())+(describing()?', described':'');
+    st.total=price(P.length);
+    $('sumLine').textContent = (P.length===12?'Full year, 12 months':P.length+(P.length===1?' month':' months'))+(describing()?', described':'');
+    $('dealHint').textContent = dealHint(P.length);
     $('total').textContent = money(st.total);
     $('descBox').hidden=!describing(); $('datesBox').hidden=!useDates(); $('addrBox').hidden=!$('delMail').checked;
     if(SHOP.venmo){
@@ -583,6 +593,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 
   $('mchips').addEventListener('click', function(e){ var b=e.target.closest('.mchip'); if(!b) return; var c=months[+b.dataset.i];
     if(c.on && picked().length===1) return; c.on=!c.on; if(c.on){ st.act=+b.dataset.i; st.week=0; } all(); });
+  $('threeM').addEventListener('click', function(){ var a=st.act>9?9:st.act; months.forEach(function(c,i){c.on=(i>=a&&i<a+3);}); st.act=a; all(); });
   $('fullYear').addEventListener('click', function(){ months.forEach(function(c){c.on=true;}); all(); });
   $('clearM').addEventListener('click', function(){ months.forEach(function(c,i){c.on=(i===st.act);}); all(); });
   $('f').addEventListener('input', function(e){ var t=e.target, k=t.dataset.k, x=st.dates[t.dataset.j];
@@ -599,7 +610,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   function orderText(){
     var P=picked(), L=["CHEET'S PRESS ORDER", 'Calendar for: '+$('forName').value.trim(),
       'Months ('+P.length+'): '+(P.length===12?'Full year, '+label(P[0])+' to '+label(P[11]):P.map(label).join(', ')),
-      'Design: '+(describing()?'Customer describes the months ($5.50 a month)':'Make them for me ($5.00 a month)')];
+      'Design: '+(describing()?'Customer describes the months (+50 cents a month)':'Make them for me')];
     if(describing()) P.forEach(function(c){ L.push('  '+label(c)+': '+(c.desc.trim()||'you pick')); });
     var ds = useDates() ? st.dates.filter(function(x){return x.d && months[x.mi].on;}).map(function(x){ return '  '+MON[months[x.mi].m].slice(0,3)+' '+x.d+': '+(x.t.trim()||'(no label)'); }) : [];
     L.push('Special days: '+(ds.length?'':'none given')); ds.forEach(function(x){ L.push(x); });
