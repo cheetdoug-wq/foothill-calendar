@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cheet's Press</title>
-<meta name="description" content="Custom calendars that move. Printed and laminated by hand in the California foothills. Scan the code and your week comes alive.">
+<meta name="description" content="Custom printed calendars with a moving picture for every week. Printed and laminated by hand in the California foothills. Scan the code and watch your week come alive.">
 <style>
 @font-face{font-family:"Bowlby One";src:url(/fonts/bowlby-one.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Figtree";src:url(/fonts/figtree-400.woff2) format("woff2");font-weight:400;font-display:swap}
@@ -71,7 +71,8 @@ textarea{min-height:76px;resize:vertical}
 .mchip{font:800 14px var(--body);border:2px solid var(--line);border-radius:12px;padding:10px 4px;background:var(--grape);color:var(--ink);cursor:pointer}
 .mchip[aria-pressed=true]{background:var(--orange);border-color:var(--orange);color:#2a1300}
 .mchip:focus-visible{outline:3px solid var(--cream);outline-offset:2px}
-.macts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.plans{grid-template-columns:repeat(3,1fr)}.card:has(input:focus-visible){outline:3px solid var(--cream);outline-offset:2px}
+@media (max-width:640px){.plans{grid-template-columns:1fr}}
 .btn.sm{padding:9px 16px;font-size:14px}
 .mcard{border:2px solid var(--line);border-radius:14px;padding:14px;background:var(--grape);margin-top:12px}
 .mhead{display:flex;justify-content:space-between;align-items:baseline}.mhead b{font-size:18px}.mhead .p{font-family:var(--display);color:var(--orange);font-size:20px}
@@ -111,9 +112,9 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 <header class="bar"><a class="logo" href="#top" id="top">Cheet's <b>Press</b></a><a class="btn" href="#build">Build a calendar</a></header>
 <div class="hero">
   <div>
-    <h1>Calendars <em>that</em> move.</h1>
-    <p class="lede">A custom calendar page, <b>printed and laminated by hand</b> in the California foothills. Every week has its own picture and a QR code. Scan it and that week comes alive on your phone.</p>
-    <div class="cta"><a class="btn" href="#build">Build yours</a><span class="price">1 month $4 · 3 months $7 · full year $12</span></div>
+    <h1>Custom <em>calendars.</em></h1>
+    <p class="lede"><b>Every week has its own animation.</b> Scan the QR code on your calendar and that week's picture starts moving on your phone. Made just for you, <b>printed and laminated by hand</b> in the California foothills.</p>
+    <div class="cta"><a class="btn" href="#build">Build yours</a><span class="price" id="heroPrice">Rest of the year $4 · half year $8 · full year $12</span></div>
   </div>
   <div class="demo"><div class="stage" id="demo"></div><div class="chips" id="chips" role="group" aria-label="Pick a scene to watch"></div></div>
 </div>
@@ -121,7 +122,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 
 <section><h2>How it works</h2>
   <div class="steps">
-    <div class="step"><b>Tell us who it's for</b><p>A name, one month or a whole year, and the birthdays and days that matter. Describe each month or let us make them up.</p></div>
+    <div class="step"><b>Tell us who it's for</b><p>A name, the rest of this year, half a year or a whole year, and the birthdays and days that matter. Describe each month or let us make them up.</p></div>
     <div class="step"><b>We make the page</b><p>A real calendar with a scene for every week, printed in color and laminated.</p></div>
     <div class="step"><b>Scan and watch</b><p>Each week has a QR code on the back. Point a phone at it and the picture starts moving.</p></div>
   </div>
@@ -136,11 +137,12 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 <section id="build"><h2>Build your calendar</h2><p class="lede" style="margin:0">Answer five quick questions. We design your calendar after you order.</p>
 <div class="build">
   <form id="f" novalidate>
-    <fieldset><legend>1. Who is it for, and which months?</legend>
+    <fieldset><legend>1. Who is it for, and how long?</legend>
       <label for="forName">Calendar is for</label><input type="text" id="forName" placeholder="Their name" autocomplete="off">
-      <label id="mlab">Tap the months you want</label>
+      <label id="plab">Pick how long</label>
+      <div class="cards plans" id="plans" role="radiogroup" aria-labelledby="plab"></div>
+      <label id="mlab" style="margin-top:14px">Your months. Tap one to preview it.</label>
       <div class="mchips" id="mchips" role="group" aria-labelledby="mlab"></div>
-      <div class="macts"><button type="button" class="btn ghost sm" id="threeM">3 months · $7</button><button type="button" class="btn ghost sm" id="fullYear">Full year · $12</button><button type="button" class="btn ghost sm" id="clearM">Just one month · $4</button></div>
       <p class="hint">Each month is its own page.</p>
     </fieldset>
     <fieldset><legend>2. Do you want to describe your months?</legend>
@@ -235,21 +237,30 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   /* months: the next 12 */
   var now = new Date(), months = [];
   for (var k=1;k<=12;k++){ var d=new Date(now.getFullYear(), now.getMonth()+k, 1); months.push({y:d.getFullYear(), m:d.getMonth(), on:k===1, desc:''}); }
-  var st = { act:0, week:0, dates:[{mi:0,d:'',t:''}], total:4 }, shown=-1;
+  var st = { act:0, week:0, dates:[{mi:0,d:'',t:''}], total:12, plan:'full' }, shown=-1;
+  /* plans: rest of this year, half year, full year. Rest of the year is hidden when it would be the same months as the half year or the full year. */
+  var restN = 12 - months[0].m, hasRest = restN < 12 && restN !== 6;
+  function planN(p){ return p==='rest'?restN:p==='half'?6:12; }
+  function span(n){ return n===1?label(months[0]):label(months[0])+' to '+label(months[n-1]); }
+  function planName(p){ return p==='rest'?'Rest of '+months[0].y:p==='half'?'Half year':'Full year'; }
+  function planText(){ return planName(st.plan)+' ('+span(planN(st.plan))+')'; }
+  function applyPlan(){ if(st.plan==='rest'&&!hasRest) st.plan='full'; var n=planN(st.plan); months.forEach(function(c,i){ c.on=i<n; }); if(st.act>=n){ st.act=0; st.week=0; } }
+  function drawPlans(){ var ps=(hasRest?['rest']:[]).concat(['half','full']);
+    $('plans').innerHTML = ps.map(function(p){ var n=planN(p); return '<label class="card"><input type="radio" name="plan" value="'+p+'"'+(p===st.plan?' checked':'')+'><span class="p">$'+base(n)+'</span><b>'+planName(p)+'</b><span>'+span(n)+(n>1?', '+n+' months':'')+'</span></label>'; }).join(''); }
   function picked(){ return months.filter(function(x){return x.on;}); }
   function nd(c){ return new Date(c.y,c.m+1,0).getDate(); }
   function label(c){ return MON[c.m]+' '+c.y; }
   function describing(){ return $('modeDesc').checked; }
-  function base(n){ return n>=12?12:Math.min(Math.floor(n/3)*7+(n%3)*4, Math.ceil(n/3)*7, 12); }
+  function base(n){ return n>=7?12:n>=4?8:4; }
   function price(n){ return base(n)+(describing()?0.5*n:0); }
-  function dealHint(n){ if(n===2) return 'Add 1 more month, it is the same price.'; if(n>=5&&n<12&&base(n)===12) return 'That is the same price as the full year. Tap Full year to get all 12.'; return ''; }
+  function dealHint(n){ return ''; }
   function shipFor(n){ return n>=5?6:3; }
   function money(n){ return '$'+n.toFixed(2); }
   function useDates(){ return $('datesYes').checked; }
   function funOn(){ return !useDates() || $('alsoFun').checked; }
   function autoScene(c,r){ var m=c.m, cold=(m===11||m<=1), fall=(m>=8&&m<=10); var set = cold?[3,4,5,6,7]:fall?[0,1,2,0,1]:[0,3,4,1,2]; return set[r%5]; }
 
-  function drawChips(){ $('mchips').innerHTML = months.map(function(c,i){ return '<button type="button" class="mchip" data-i="'+i+'" aria-pressed="'+c.on+'">'+MON[c.m].slice(0,3)+' '+String(c.y).slice(2)+'</button>'; }).join(''); }
+  function drawChips(){ $('mchips').innerHTML = months.map(function(c,i){ if(!c.on) return ''; return '<button type="button" class="mchip" data-i="'+i+'" aria-pressed="'+(i===st.act)+'">'+MON[c.m].slice(0,3)+' '+String(c.y).slice(2)+'</button>'; }).join(''); }
   function drawMonths(){
     $('months').innerHTML = months.map(function(c,i){ if(!c.on) return '';
       return '<label for="ds'+i+'">'+label(c)+'</label><textarea data-k="ds" data-i="'+i+'" id="ds'+i+'" placeholder="Like: snowy cabin with our two cats.">'+esc(c.desc)+'</textarea>'; }).join('');
@@ -265,21 +276,18 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   function drawPreview(force){
     var P=picked(); if(!months[st.act].on) { st.act=months.indexOf(P[0]); st.week=0; }
     var ds = useDates()? st.dates.filter(function(x){return x.d && months[x.mi].on;}).length : 0;
-    var rows=[['For',$('forName').value.trim()||'—'],['Months',P.length===12?'Full year ('+label(P[0])+' to '+label(P[11])+')':P.map(label).join(', ')],['Design',describing()?'You describe them':'We make them'],['Special days',useDates()?(ds?ds+(ds===1?' date':' dates'):'add them on the left'):'Surprise me'],['Delivery',$('delMail').checked?'Mailed (+$'+shipFor(P.length)+' shipping)':'Pickup or drop-off']];
+    var rows=[['For',$('forName').value.trim()||'—'],['Months',planText()],['Design',describing()?'You describe them':'We make them'],['Special days',useDates()?(ds?ds+(ds===1?' date':' dates'):'add them on the left'):'Surprise me'],['Delivery',$('delMail').checked?'Mailed (+$'+shipFor(P.length)+' shipping)':'Pickup or drop-off']];
     $('olist').innerHTML=rows.map(function(r){return '<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>';}).join('');
     st.total=price(P.length);
-    $('sumLine').textContent = (P.length===12?'Full year, 12 months':P.length+(P.length===1?' month':' months'))+(describing()?', described':'');
+    $('sumLine').textContent = planName(st.plan)+', '+P.length+(P.length===1?' month':' months')+(describing()?', described':'');
     $('dealHint').textContent = dealHint(P.length);
     var ship=$('delMail').checked?shipFor(picked().length):0; st.pay=st.total+ship; $('total').textContent = money(st.pay); $('ototal').textContent = money(st.pay); $('sumLine').textContent += ship?' + $'+ship+' shipping':'';
     $('descBox').hidden=!describing(); $('datesBox').hidden=!useDates(); $('addrBox').hidden=!$('delMail').checked;
   }
-  function all(){ drawChips(); drawMonths(); drawDates(); drawPreview(true); }
+  function all(){ applyPlan(); drawPlans(); drawChips(); drawMonths(); drawDates(); drawPreview(true); }
 
-  $('mchips').addEventListener('click', function(e){ var b=e.target.closest('.mchip'); if(!b) return; var c=months[+b.dataset.i];
-    if(c.on && picked().length===1) return; c.on=!c.on; if(c.on){ st.act=+b.dataset.i; st.week=0; } all(); });
-  $('threeM').addEventListener('click', function(){ var a=st.act>9?9:st.act; months.forEach(function(c,i){c.on=(i>=a&&i<a+3);}); st.act=a; all(); });
-  $('fullYear').addEventListener('click', function(){ months.forEach(function(c){c.on=true;}); all(); });
-  $('clearM').addEventListener('click', function(){ months.forEach(function(c,i){c.on=(i===st.act);}); all(); });
+  $('mchips').addEventListener('click', function(e){ var b=e.target.closest('.mchip'); if(!b) return; st.act=+b.dataset.i; st.week=0; drawChips(); drawPreview(true); });
+  $('plans').addEventListener('change', function(e){ var t=e.target; if(t.name!=='plan') return; e.stopPropagation(); st.plan=t.value; all(); var r=$('plans').querySelector('input:checked'); if(r) r.focus(); });
   $('f').addEventListener('input', function(e){ var t=e.target, k=t.dataset.k, x=st.dates[t.dataset.j];
     if(k==='ds'){ months[t.dataset.i].desc=t.value; st.act=+t.dataset.i; }
     else if(k==='dm'){ x.mi=+t.value; st.act=x.mi; drawDates(); }
@@ -291,7 +299,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 
   function orderText(){
     var P=picked(), L=["CHEET'S PRESS ORDER", 'Calendar for: '+$('forName').value.trim(),
-      'Months ('+P.length+'): '+(P.length===12?'Full year, '+label(P[0])+' to '+label(P[11]):P.map(label).join(', ')),
+      'Months ('+P.length+'): '+planText(),
       'Design: '+(describing()?'Customer describes the months (+50 cents a month)':'Make them for me')];
     if(describing()) P.forEach(function(c){ L.push('  '+label(c)+': '+(c.desc.trim()||'you pick')); });
     var ds = useDates() ? st.dates.filter(function(x){return x.d && months[x.mi].on;}).map(function(x){ return '  '+MON[months[x.mi].m].slice(0,3)+' '+x.d+': '+(x.t.trim()||'(no label)'); }) : [];
@@ -309,7 +317,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     if(miss.length){ m.className='bad'; m.textContent='Still needed: '+miss.join(', ')+'.'; return; }
     m.className=''; m.textContent='';
     var P=picked(), mail=$('delMail').checked, ship=mail?shipFor(P.length):0;
-    var o={ forName:$('forName').value.trim(), months:P.length===12?'Full year ('+label(P[0])+' to '+label(P[11])+')':P.map(label).join(', '), n:P.length,
+    var o={ forName:$('forName').value.trim(), months:planText(), n:P.length,
       design:describing()?'You describe them':'We make them', delivery:mail?'Mailed':'Pickup or drop-off', addr:mail?$('addr').value.trim():'',
       price:st.total, ship:ship, total:st.total+ship, name:$('buyer').value.trim(), email:em, phone:$('phone').value.trim(), details:orderText() };
     try{ sessionStorage.setItem('cpOrder', JSON.stringify(o)); sessionStorage.setItem('cpForm', JSON.stringify(snap())); }catch(err){}
@@ -317,12 +325,13 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   });
   function snap(){ var v={}; ['forName','buyer','contact','phone','addr'].forEach(function(k){ v[k]=$(k).value; });
     ['modeDesc','datesYes','delMail','alsoFun'].forEach(function(k){ v[k]=$(k).checked; });
-    return {v:v, on:months.map(function(c){return c.on;}), desc:months.map(function(c){return c.desc;}), dates:st.dates}; }
+    return {v:v, plan:st.plan, desc:months.map(function(c){return c.desc;}), dates:st.dates}; }
   function restore(){ var x=null; try{ x=JSON.parse(sessionStorage.getItem('cpForm')); }catch(e){} if(!x) return;
     try{ for(var k in x.v){ var el=$(k); if(!el) continue; if(typeof x.v[k]==='boolean'){ if(x.v[k]) el.checked=true; else if(k==='modeDesc') $('modeMake').checked=true; else if(k==='datesYes') $('datesNo').checked=true; else if(k==='delMail') $('delPickup').checked=true; else el.checked=false; } else el.value=x.v[k]; }
-      if(x.on && x.on.some(Boolean)) months.forEach(function(c,i){ c.on=!!x.on[i]; c.desc=(x.desc&&x.desc[i])||''; });
-      if(x.dates && x.dates.length) st.dates=x.dates; st.act=months.findIndex(function(c){return c.on;}); if(st.act<0) st.act=0;
+      if(x.plan==='rest'||x.plan==='half'||x.plan==='full') st.plan=x.plan; months.forEach(function(c,i){ c.desc=(x.desc&&x.desc[i])||''; });
+      applyPlan(); if(x.dates && x.dates.length) st.dates=x.dates.filter(function(d){ return d && months[d.mi] && months[d.mi].on; }); if(!st.dates.length) st.dates=[{mi:0,d:'',t:''}]; st.act=0;
     }catch(e){} }
+  $('heroPrice').textContent=(hasRest?'Rest of the year $'+base(restN)+' · ':'')+'half year $8 · full year $12'; if(!hasRest) $('heroPrice').textContent='Half year $8 · full year $12';
   restore();
   all();
 })();
