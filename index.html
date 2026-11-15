@@ -550,19 +550,20 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   /* running Cheet under the hero: reuse the scene's Cheet by rendering one scene off-screen and lifting her out */
   (function(){ var t=document.createElement('div'); t.innerHTML=CAL.scene(0,{uid:'r'}); var g=t.querySelector('.pace'); if(g){ g.classList.remove('pace'); g.removeAttribute('style'); $('runner').appendChild(g); } })();
 
-  /* months: the next 12 */
+  /* months: this month (only used by Rest of the year) and the next 12 */
   var now = new Date(), months = [];
-  for (var k=1;k<=12;k++){ var d=new Date(now.getFullYear(), now.getMonth()+k, 1); months.push({y:d.getFullYear(), m:d.getMonth(), on:k===1, desc:''}); }
-  var st = { act:0, week:0, dates:[{mi:0,d:'',t:''}], total:12, plan:'full' }, shown=-1;
-  /* plans: rest of this year, half year, full year. Rest of the year is hidden when it would be the same months as the half year or the full year. */
-  var restN = 12 - months[0].m, hasRest = restN < 12 && restN !== 6;
+  for (var k=0;k<=12;k++){ var d=new Date(now.getFullYear(), now.getMonth()+k, 1); months.push({y:d.getFullYear(), m:d.getMonth(), on:k===1, desc:''}); }
+  var st = { act:1, week:0, dates:[{mi:1,d:'',t:''}], total:12, plan:'full' }, shown=-1;
+  /* plans: rest of this year (this month through December), half year and full year (both start next month). */
+  var restN = 12 - months[0].m, hasRest = true;
   function planN(p){ return p==='rest'?restN:p==='half'?6:12; }
-  function span(n){ return n===1?label(months[0]):label(months[0])+' to '+label(months[n-1]); }
+  function planS(p){ return p==='rest'?0:1; }
+  function span(p){ var s=planS(p), n=planN(p); return n===1?label(months[s]):n===2&&months[s].y===months[s+1].y?MON[months[s].m]+' and '+label(months[s+1]):label(months[s])+' to '+label(months[s+n-1]); }
   function planName(p){ return p==='rest'?'Rest of '+months[0].y:p==='half'?'Half year':'Full year'; }
-  function planText(){ return planName(st.plan)+' ('+span(planN(st.plan))+')'; }
-  function applyPlan(){ if(st.plan==='rest'&&!hasRest) st.plan='full'; var n=planN(st.plan); months.forEach(function(c,i){ c.on=i<n; }); if(st.act>=n){ st.act=0; st.week=0; } }
+  function planText(){ return planName(st.plan)+' ('+span(st.plan)+')'; }
+  function applyPlan(){ if(st.plan==='rest'&&!hasRest) st.plan='full'; var s=planS(st.plan), n=planN(st.plan); months.forEach(function(c,i){ c.on=i>=s&&i<s+n; }); if(!months[st.act].on){ st.act=s; st.week=0; } }
   function drawPlans(){ var ps=(hasRest?['rest']:[]).concat(['half','full']);
-    $('plans').innerHTML = ps.map(function(p){ var n=planN(p); return '<label class="card"><input type="radio" name="plan" value="'+p+'"'+(p===st.plan?' checked':'')+'><span class="p">$'+base(n)+'</span><b>'+planName(p)+'</b><span>'+span(n)+(n>1?', '+n+' months':'')+'</span></label>'; }).join(''); }
+    $('plans').innerHTML = ps.map(function(p){ var n=planN(p); return '<label class="card"><input type="radio" name="plan" value="'+p+'"'+(p===st.plan?' checked':'')+'><span class="p">$'+base(n)+'</span><b>'+planName(p)+'</b><span>'+span(p)+(n>2?', '+n+' months':'')+'</span></label>'; }).join(''); }
   function picked(){ return months.filter(function(x){return x.on;}); }
   function nd(c){ return new Date(c.y,c.m+1,0).getDate(); }
   function label(c){ return MON[c.m]+' '+c.y; }
@@ -645,7 +646,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   function restore(){ var x=null; try{ x=JSON.parse(sessionStorage.getItem('cpForm')); }catch(e){} if(!x) return;
     try{ for(var k in x.v){ var el=$(k); if(!el) continue; if(typeof x.v[k]==='boolean'){ if(x.v[k]) el.checked=true; else if(k==='modeDesc') $('modeMake').checked=true; else if(k==='datesYes') $('datesNo').checked=true; else if(k==='delMail') $('delPickup').checked=true; else el.checked=false; } else el.value=x.v[k]; }
       if(x.plan==='rest'||x.plan==='half'||x.plan==='full') st.plan=x.plan; months.forEach(function(c,i){ c.desc=(x.desc&&x.desc[i])||''; });
-      applyPlan(); if(x.dates && x.dates.length) st.dates=x.dates.filter(function(d){ return d && months[d.mi] && months[d.mi].on; }); if(!st.dates.length) st.dates=[{mi:0,d:'',t:''}]; st.act=0;
+      applyPlan(); if(x.dates && x.dates.length) st.dates=x.dates.filter(function(d){ return d && months[d.mi] && months[d.mi].on; }); if(!st.dates.length) st.dates=[{mi:planS(st.plan),d:'',t:''}]; st.act=planS(st.plan);
     }catch(e){} }
   $('heroPrice').textContent=(hasRest?'Rest of the year $'+base(restN)+' · ':'')+'half year $8 · full year $12'; if(!hasRest) $('heroPrice').textContent='Half year $8 · full year $12';
   restore();
