@@ -38,3 +38,7 @@ Print: 11 x 8.5 landscape, double-sided, flip on the short edge. Each month is o
 `sfx.py` synthesizes every sound effect from sine waves and noise (nothing sampled, nothing to credit); `render.py` mixes them in from the `sfx` list in each reel definition. Run `python3 maker/reels/sfx.py demo.wav` to hear one of each.
 `python3 maker/reels/render.py` re-renders all of them to `media/reelN.mp4` at 1080x1920, 30 frames a second, one exact frame at a time.
 `python3 maker/reels/render.py 2 music.mp3` renders reel 2 with a music file mixed in.
+
+## Instagram still posts
+`reels/post.html` is the "November, as scheduled by my dog" joke post. Render it with:
+    python3 maker/reels/render-post.py out.png

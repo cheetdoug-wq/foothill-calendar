@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Cheet's Press joke post</title>
+<!-- A single square-ish image for Instagram. render-post.py screenshots #card at 1080x1350. -->
+<style>
+@font-face{font-family:"Bowlby One";src:url(/fonts/bowlby-one.woff2) format("woff2");font-weight:400}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-600.woff2) format("woff2");font-weight:600}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-700.woff2) format("woff2");font-weight:700}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-800.woff2) format("woff2");font-weight:800 900}
+html,body{margin:0;background:#000}
+#card{width:540px;height:675px;box-sizing:border-box;position:relative;overflow:hidden;
+  background:radial-gradient(130% 90% at 50% 6%,#3a1d6e 0%,#24123f 55%,#180c2c 100%);
+  font-family:"Figtree",system-ui,sans-serif;color:#fbf4ff;padding:24px 22px 18px;
+  display:flex;flex-direction:column;gap:12px}
+header{flex:0 0 auto}
+h1{margin:0;font:400 35px/1.06 "Bowlby One","Arial Black",sans-serif;letter-spacing:.3px}
+h1 em{font-style:normal;color:#ff8a1f}
+.sub{margin:8px 0 0;font:800 15px/1.25 "Figtree",sans-serif;color:#d6c6f2}
+.grid{flex:1 1 auto;min-height:0;background:#fff3df;border-radius:12px;padding:8px;box-shadow:0 16px 40px #0009;color:#2b1a40;
+  display:flex;flex-direction:column;gap:4px}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.dow b{font:800 9px/1 "Figtree",sans-serif;color:#8a7aa8;text-align:center;letter-spacing:.5px}
+.days{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(5,1fr);gap:3px}
+.d{border-radius:6px;background:#f6ead3;padding:4px 4px 3px;box-sizing:border-box;overflow:hidden}
+.d u{display:block;text-decoration:none;font:800 11px/1 "Figtree",sans-serif;color:#9a8ab5;margin-bottom:2px}
+.d span{display:block;font:700 9px/1.15 "Figtree",sans-serif;color:#3d2a57}
+.d.nap{background:#efe1c6}
+.d.nap span{color:#766492}
+.d.big{background:#ffdfb6}
+.d.big u{color:#c2610c}
+.d.big span{color:#8a3d00;font-weight:800}
+.d.off{background:transparent}
+.foot{flex:0 0 auto;display:flex;align-items:center;gap:10px}
+.foot svg{flex:0 0 auto;width:78px;height:48px;overflow:visible}
+.foot .t{flex:1 1 auto;min-width:0}
+.foot .t b{display:block;font:800 14.5px/1.2 "Figtree",sans-serif;color:#fff}
+.foot .t span{display:block;font:700 12px/1.3 "Figtree",sans-serif;color:#cbb8ee;margin-top:2px}
+.foot .tag{flex:0 0 auto;font:800 14px/1 "Figtree",sans-serif;color:#2a1300;background:#ff8a1f;padding:10px 13px;border-radius:999px}
+</style></head>
+<body>
+<div id="card">
+  <header>
+    <h1>November, as scheduled<br>by <em>my dog.</em></h1>
+    <p class="sub">She had a lot of thoughts about this month.</p>
+  </header>
+  <div class="grid">
+    <div class="dow"><b>SUN</b><b>MON</b><b>TUE</b><b>WED</b><b>THU</b><b>FRI</b><b>SAT</b></div>
+    <div class="days" id="days"></div>
+  </div>
+  <div class="foot">
+    <svg id="cheet" viewBox="-80 -106 212 126" aria-hidden="true"></svg>
+    <div class="t"><b>Yours can say anything you want.</b><span>Custom calendars · half year $8 · full year $12</span></div>
+    <div class="tag">cheetspress.store</div>
+  </div>
+</div>
+<script src="/src/scenes.js"></script>
+<script>
+var DAYS = [
+  'Nap', 'Bark at nothing', 'Nap', 'Nap', 'ZOOMIES, 6:14pm', 'Nap', 'Sniff entire fence',
+  'Nap', 'Vacuum. Enemy.', 'Nap', 'Nap', 'Dropped food', 'Stare at a wall', 'Nap',
+  'Sunbeam duty', 'Nap', 'Mailman. Again.', 'Nap', 'BATH. Betrayal.', 'Recovery nap', 'Nap',
+  'Nap', 'Attack a leaf', 'Nap', 'Steal warm spot', 'Thanksgiving: BEG', 'Nap, extended', 'Nap',
+  'Nap', 'ZOOMIES, 6:14pm'
+];
+var BIG = { 5: 1, 19: 1, 26: 1, 30: 1 };
+var html = '';
+for (var d = 1; d <= 30; d++) {
+  var txt = DAYS[d - 1], cls = 'd' + (BIG[d] ? ' big' : (txt.indexOf('Nap') === 0 ? ' nap' : ''));
+  html += '<div class="' + cls + '"><u>' + d + '</u><span>' + txt + '</span></div>';
+}
+html += '<div class="d off"></div><div class="d off"></div><div class="d off"></div><div class="d off"></div><div class="d off"></div>';
+document.getElementById('days').innerHTML = html;
+/* lift Cheet out of a scene so she matches the calendars */
+(function () {
+  var tmp = document.createElement('div'); tmp.innerHTML = CAL.scene(0, { uid: 'p' });
+  var ch = tmp.querySelector('.pace'); ch.classList.remove('pace'); ch.removeAttribute('style');
+  document.getElementById('cheet').appendChild(ch);
+})();
+window.POST_READY = true;
+</script>
+</body></html>
