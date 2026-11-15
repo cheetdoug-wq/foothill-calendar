@@ -40,5 +40,6 @@ Print: 11 x 8.5 landscape, double-sided, flip on the short edge. Each month is o
 `python3 maker/reels/render.py 2 music.mp3` renders reel 2 with a music file mixed in.
 
 ## Instagram still posts
-`reels/post.html` is the "November, as scheduled by my dog" joke post. Render it with:
-    python3 maker/reels/render-post.py out.png
+`reels/post.html` ("November, as scheduled by my dog") and `reels/post2.html` ("I gave my dog access to the calendar").
+    python3 maker/reels/render-post.py out.png          # post.html
+    python3 maker/reels/render-post.py post2 out.png    # post2.html
