@@ -26,6 +26,13 @@ html,body{margin:0;background:#000}
 .phone{position:absolute;left:50%;top:300px;width:300px;height:560px;margin-left:-150px;border-radius:38px;background:#0d0718;border:8px solid #0d0718;box-shadow:0 0 0 2px #5b3d93,0 30px 70px #000b;overflow:hidden;opacity:0}
 .phone .pg{position:absolute;left:0;top:0;width:1130px}
 .phone .beam{position:absolute;left:10px;right:10px;top:0;height:5px;border-radius:5px;background:#3dff8a;box-shadow:0 0 18px 4px #3dff8a}
+.obj{position:absolute;left:50%;top:238px;width:250px;height:250px;margin-left:-125px;opacity:0}
+.obj svg,.stamp svg{width:100%;height:100%;display:block}
+.stamp{position:absolute;left:50%;top:352px;width:156px;height:156px;margin-left:4px;opacity:0}
+.walk{position:absolute;left:0;bottom:140px;width:344px;opacity:0}
+.walk svg{width:100%;height:auto;display:block;overflow:visible}
+.gcal{position:absolute;left:50%;top:232px;width:392px;margin-left:-196px;border-radius:8px;box-shadow:0 22px 54px #000b;opacity:0}
+.gcal img{display:block;width:100%;border-radius:8px}
 .dull{position:absolute;left:50%;top:330px;width:430px;margin-left:-215px;background:#e9e7e2;border-radius:6px;box-shadow:0 26px 60px #000a;padding:18px 18px 20px;box-sizing:border-box;opacity:0;color:#8b8a86}
 .dull b{display:block;font:800 24px/1 "Figtree",sans-serif;letter-spacing:6px;color:#9a9994;margin-bottom:12px}
 .dull .g{display:grid;grid-template-columns:repeat(7,1fr);border-top:2px solid #c9c7c1;border-left:2px solid #c9c7c1}
@@ -93,6 +100,18 @@ html,body{margin:0;background:#000}
       { t0: 8.8,  t1: 11.2, kind: 'scene', idx: 7, cap: ['And a fox.', 'With fireworks.'] },
       { t0: 11.2, t1: 14.2, kind: 'phone', cap: ['Scan the code.', 'Watch it move.'] },
       { t0: 14.2, t1: 17.5, kind: 'end' } ] },
+    /* skit: the dog rates Christmas gifts */
+    7: { dur: 17.5,
+      sfx: [[0.25,'pop'],[2.35,'pop'],[3.30,'thud',.8],[4.15,'pop'],[5.10,'thud',.8],[5.95,'pop'],[6.90,'thud',.8],
+            [7.75,'pop'],[8.90,'sparkle'],[9.30,'chime',.7],[11.25,'whoosh',.7],[12.30,'scan',.8],[14.05,'whoosh',.7],[14.45,'jingle']],
+      segs: [
+      { t0: 0,    t1: 2.2,  kind: 'gift', cap: ['I let my dog', 'rate Christmas gifts.'], obj: null },
+      { t0: 2.2,  t1: 4.0,  kind: 'gift', cap: ['A scented', 'candle.'],    obj: 'candle',   verdict: 'no' },
+      { t0: 4.0,  t1: 5.8,  kind: 'gift', cap: ['Socks.', 'Again.'],        obj: 'socks',    verdict: 'no' },
+      { t0: 5.8,  t1: 7.6,  kind: 'gift', cap: ['A $25', 'gift card.'],     obj: 'giftcard', verdict: 'no' },
+      { t0: 7.6,  t1: 11.2, kind: 'gift', cap: ['Something made', 'just for them.'], obj: 'cal', verdict: 'yes', sub: 'Their people. Their dates. Their dog.' },
+      { t0: 11.2, t1: 14.0, kind: 'phone', cap: ['Scan a week.', 'It moves.'] },
+      { t0: 14.0, t1: 17.5, kind: 'end' } ] },
     /* ad: the gift */
     6: { dur: 16, segs: [
       { t0: 0,    t1: 3.0,  kind: 'cal',   cap: ['The gift nobody', 'else is giving.'], sub: 'A calendar made just for them.' },
@@ -103,6 +122,24 @@ html,body{margin:0;background:#000}
   };
   var r = +(new URLSearchParams(location.search).get('r') || 1), R = REELS[r] || REELS[1], D = R.dur, F = 0.45;
   var stage = document.getElementById('stage'), css = '', n = 0;
+  var OBJ = {
+    candle: '<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="45" y="46" width="30" height="58" rx="5" fill="#f4e7cd"/><rect x="45" y="46" width="30" height="9" rx="4.5" fill="#ddc9a4"/><rect x="58.5" y="33" width="3" height="13" fill="#6b5b43"/><path d="M60 9C71 24 70 34 60 34 50 34 49 24 60 9Z" fill="#ff8a1f"/><path d="M60 18C66 26 65 32 60 32 55 32 54 26 60 18Z" fill="#ffd77a"/></svg>',
+    socks: '<svg viewBox="0 0 120 120" aria-hidden="true"><g fill="#b9cdea"><path d="M26 26h22v34c0 9 5 11 11 15 10 7 8 21-4 23-10 1-17-5-20-13-3-8-9-11-9-23Z"/><path d="M60 26h22v34c0 9 5 11 11 15 10 7 8 21-4 23-10 1-17-5-20-13-3-8-9-11-9-23Z"/></g><rect x="26" y="26" width="22" height="9" fill="#8fa9cf"/><rect x="60" y="26" width="22" height="9" fill="#8fa9cf"/></svg>',
+    giftcard: '<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="14" y="37" width="92" height="58" rx="8" fill="#6f58a6"/><rect x="14" y="54" width="92" height="13" fill="#4e3b7d"/><rect x="24" y="76" width="36" height="6" rx="3" fill="#c9b7ec"/><circle cx="88" cy="80" r="8" fill="#ff8a1f"/></svg>'
+  };
+  var STAMP = {
+    no:  '<svg viewBox="0 0 100 100" role="img" aria-label="Rejected"><circle cx="50" cy="50" r="43" fill="none" stroke="#ff6257" stroke-width="9"/><path d="M33 33 67 67M67 33 33 67" stroke="#ff6257" stroke-width="11" stroke-linecap="round"/></svg>',
+    yes: '<svg viewBox="0 0 100 100" role="img" aria-label="Approved"><circle cx="50" cy="50" r="43" fill="none" stroke="#48dd8b" stroke-width="9"/><path d="M29 52 44 68 72 33" fill="none" stroke="#48dd8b" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+  function cheetSvg(uid){
+    var tmp = document.createElement('div'); tmp.innerHTML = CAL.scene(0, { uid: uid });
+    var ch = tmp.querySelector('.pace'); ch.classList.remove('pace'); ch.removeAttribute('style');
+    var s = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    s.setAttribute('viewBox','-70 -112 190 128'); s.setAttribute('aria-hidden','true');
+    var sh = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+    sh.setAttribute('cx','22'); sh.setAttribute('cy','0'); sh.setAttribute('rx','60'); sh.setAttribute('ry','6'); sh.setAttribute('fill','#0005');
+    s.appendChild(sh); s.appendChild(ch); return s;
+  }
   document.getElementById('scenecss').textContent = CAL.CSS.replace(/@font-face\{[^}]*\}/g, '');
   function pct(t){ return (Math.max(0, Math.min(D, t)) / D * 100).toFixed(3) + '%'; }
   /* one animation that runs the whole length of the reel; stops = [[seconds, 'css props', 'easing to the next stop'], ...] */
@@ -137,6 +174,30 @@ html,body{margin:0;background:#000}
       L = el('layer dark'); caption(L, g, g.sub);
       var c = el('cal', '<img src="/img/sample-jan.jpg" alt="">', L);
       anim(c, [[g.t0, 'opacity:0;transform:translateY(70px) rotate(-9deg) scale(.9)', OUT], [g.t0 + 1.1, 'opacity:1;transform:translateY(0) rotate(-4deg) scale(1)'], [g.t1 + F, 'opacity:1;transform:translateY(-10px) rotate(-3deg) scale(1.04)']]);
+    } else if (g.kind === 'gift') {
+      L = el('layer dark');
+      if (g.cap) caption(L, g, g.sub);
+      if (g.obj === 'cal') {
+        var gc = el('gcal', '<img src="/img/sample-jan.jpg" alt="">', L);
+        anim(gc, [[g.t0 + .2, 'opacity:0;transform:translateY(46px) rotate(-7deg) scale(.88)', OUT], [g.t0 + 1.0, 'opacity:1;transform:rotate(-3deg) scale(1)'], [g.t1 + F, 'opacity:1;transform:rotate(-2deg) scale(1.05)']]);
+      } else if (g.obj) {
+        var ob = el('obj', OBJ[g.obj], L);
+        anim(ob, [[g.t0 + .2, 'opacity:0;transform:translateY(34px) scale(.78)', OUT], [g.t0 + .8, 'opacity:1;transform:none'], [g.t1 - .05, 'opacity:1;transform:none'], [g.t1 + .2, 'opacity:0;transform:none']]);
+      }
+      /* Cheet trots in from the right, judges it, and either leaves or stays */
+      var w = el('walk', '', L); w.appendChild(cheetSvg('g' + i));
+      var stay = g.verdict === 'yes';
+      if (g.obj === null) {
+        anim(w, [[g.t0, 'opacity:0;transform:translateX(545px) scaleX(-1)'], [g.t0 + .25, 'opacity:1;transform:translateX(520px) scaleX(-1)', 'cubic-bezier(.3,0,.55,1)'], [g.t1 - .1, 'opacity:1;transform:translateX(105px) scaleX(-1)'], [g.t1 + F, 'opacity:1;transform:translateX(105px) scaleX(-1)']]);
+      } else if (stay) {
+        anim(w, [[g.t0, 'opacity:1;transform:translateX(105px) scaleX(-1)'], [g.t0 + .9, 'opacity:1;transform:translateX(105px) scaleX(-1)', 'cubic-bezier(.3,0,.55,1)'], [g.t0 + 1.8, 'opacity:1;transform:translateX(150px) scaleX(-1)'], [g.t1 + F, 'opacity:1;transform:translateX(150px) scaleX(-1)']]);
+      } else {
+        anim(w, [[g.t0, 'opacity:1;transform:translateX(105px) scaleX(-1)'], [g.t0 + .8, 'opacity:1;transform:translateX(105px) scaleX(-1)'], [g.t0 + .95, 'opacity:1;transform:translateX(105px) scaleX(1)', 'cubic-bezier(.4,0,.6,1)'], [g.t1 + .3, 'opacity:1;transform:translateX(545px) scaleX(1)']]);
+      }
+      if (g.verdict) {
+        var st = el('stamp', STAMP[g.verdict], L), sa = stay ? g.t0 + 1.25 : g.t0 + 1.05;
+        anim(st, [[sa, 'opacity:0;transform:scale(1.9) rotate(-16deg)', 'cubic-bezier(.2,1.5,.4,1)'], [sa + .22, 'opacity:1;transform:scale(1) rotate(-11deg)'], [g.t1 - .05, 'opacity:1;transform:scale(1) rotate(-11deg)'], [g.t1 + .2, 'opacity:0;transform:scale(1) rotate(-11deg)']]);
+      }
     } else if (g.kind === 'dull') {
       L = el('layer dark'); caption(L, g, g.sub);
       var notes = {3:'Dentist',8:'Trash day',11:'Meeting',12:'Meeting',15:'Trash day',17:'Taxes',19:'Meeting',22:'Trash day',25:'Oil change',29:'Trash day'}, cells = '';
@@ -172,7 +233,7 @@ html,body{margin:0;background:#000}
   if (R.bar) { var b = el('bar', '<i></i>'); show(b, R.bar[0], R.bar[1], true, false); anim(b.firstChild, [[R.bar[0], 'transform:scaleX(0)'], [R.bar[1], 'transform:scaleX(1)']]); }
   document.getElementById('tl').textContent = css;
   /* render.py calls this to jump to an exact moment */
-  window.REEL = { dur: D, seek: function(t){
+  window.REEL = { dur: D, sfx: R.sfx || [], seek: function(t){
     document.getAnimations().forEach(function(a){ a.pause(); a.currentTime = t * 1000; });
     document.querySelectorAll('svg.scene').forEach(function(s){ s.pauseAnimations(); s.setCurrentTime(t); });
   } };
