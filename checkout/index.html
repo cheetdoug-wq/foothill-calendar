@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Checkout · Cheet's Press</title><meta name="robots" content="noindex">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+@font-face{font-family:"Bowlby One";src:url(/fonts/bowlby-one.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-600.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-700.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-800.woff2) format("woff2");font-weight:800 900;font-display:swap}
+
 :root{ /* A print shop poster: deep grape paper, one loud orange ink, chunky press type. Layout: poster hero with a live scene, three steps, then the order builder (form left, live preview right). */
   --grape:#1c0e33; --plum:#2b1650; --line:#4b2f7d; --ink:#fbf4ff; --muted:#c6b4e6; --orange:#ff8a1f; --cream:#fff3df;
   --display:"Bowlby One","Arial Black",Impact,sans-serif; --body:"Figtree",system-ui,sans-serif; color-scheme:dark}
@@ -126,7 +131,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
           <label class="card" id="cashCard"><input type="radio" name="pm" value="cash"><b>Cash at pickup</b><span>Pay when you pick up your calendar.</span></label>
         </div>
       </fieldset>
-      <div class="sum" style="margin-top:16px"><div class="acts" style="margin-top:0"><button class="btn" id="go" type="submit">Confirm order</button></div><p class="hint" id="msg" role="status"></p></div>
+      <div class="sum" style="margin-top:16px"><div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden"><label>Leave this empty <input type="text" id="hp" tabindex="-1" autocomplete="off"></label></div><p class="hint" style="margin:0 0 12px">By confirming, you agree to our <a href="/terms/">terms of sale</a> and <a href="/privacy/">privacy policy</a>.</p><div class="acts" style="margin-top:0"><button class="btn" id="go" type="submit">Confirm order</button></div><p class="hint" id="msg" role="status"></p></div>
     </form>
   </div>
   <div id="done" class="ok" hidden tabindex="-1">
@@ -141,7 +146,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     </div>
   </div>
 </main>
-<footer style="padding:20px 0 40px;color:var(--muted);font-size:14px">Cheet's Press. Questions? Email <a href="mailto:cheetspress@gmail.com">cheetspress@gmail.com</a>.</footer>
+<footer style="padding:20px 0 40px;color:var(--muted);font-size:14px">Cheet's Press. Questions? Email <a href="mailto:cheetspress@gmail.com">cheetspress@gmail.com</a>. <a href="/privacy/">Privacy policy</a> · <a href="/terms/">Terms of sale</a> · No cookies, no trackers.</footer>
 </div>
 <script>
 (function(){
@@ -163,17 +168,18 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   function label(){ $('go').textContent = pm()==='venmo' ? 'Confirm and pay '+money(o.total)+' with Venmo' : 'Confirm order, pay cash at pickup'; }
   document.querySelectorAll('input[name=pm]').forEach(function(r){ r.addEventListener('change',label); }); label();
   $('pf').addEventListener('submit', function(e){ e.preventDefault();
-    var cash=pm()==='cash', oid='CP-'+String(Math.floor(1000+Math.random()*9000)), u=SHOP.venmo;
+    if($('hp').value){ $('checkout').hidden=true; $('done').hidden=false; $('oid').textContent='received'; return; }
+    var cash=pm()==='cash', oid='CP-'+(function(d){return String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');})(new Date())+String(Math.floor(100+Math.random()*900)), u=SHOP.venmo;
     var vurl='https://venmo.com/'+encodeURIComponent(u)+'?txn=pay&amount='+Number(o.total).toFixed(2)+'&note='+encodeURIComponent("Cheet's Press "+oid);
     if(!cash){ try{ window.open(vurl,'_blank','noopener'); }catch(err){} }
     var b=$('go'); b.disabled=true; b.textContent='Confirming…'; $('msg').textContent='';
     var auto='Thanks for your order! Your order number is '+oid+'.\n\n'+(cash?'You chose to pay '+money(o.total)+' in cash at pickup.':'Your total is '+money(o.total)+'. If you have not finished paying, send it on Venmo to @'+u+' with '+oid+' in the note.')+'\n\nWhat happens next: we design your calendar and email you a picture to check before we print. Reply to this email with any questions or changes.\n\n- Cheet\'s Press';
     fetch('https://formsubmit.co/ajax/'+SHOP.orderEmail,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({_subject:'New order '+oid+' for '+o.forName+' ('+money(o.total)+', '+(cash?'cash':'Venmo')+')', _template:'box', _captcha:'false', _replyto:o.email, email:o.email,
+      body:JSON.stringify({_subject:'New order '+oid+' for '+o.forName+' ('+money(o.total)+', '+(cash?'cash':'Venmo')+')', _template:'box', _captcha:'false', _honey:$('hp').value, _replyto:o.email, email:o.email,
         _autoresponse:auto, Order:oid, Total:money(o.total)+(mail?' (includes '+money(o.ship)+' shipping)':''), Payment:cash?'Cash at pickup':'Venmo, look for '+oid+' in the note', Name:o.name, Phone:o.phone||'-', Details:'Order '+oid+'\n'+o.details})})
     .then(function(r){return r.json();}).then(function(j){
       if(String(j.success)!=='true') throw new Error(j.message||'');
-      try{ sessionStorage.removeItem('cpOrder'); history.replaceState(null,'',location.pathname+'#done'); }catch(err){}
+      try{ sessionStorage.removeItem('cpOrder'); sessionStorage.removeItem('cpForm'); history.replaceState(null,'',location.pathname+'#done'); }catch(err){}
       $('checkout').hidden=true; $('done').hidden=false; $('oid').textContent=oid; $('em').textContent=o.email;
       $('dlv').textContent = mail ? ' We mail it to you.' : ' We set up pickup or drop-off with you by email.';
       if(cash){ $('doneText').textContent='Bring '+money(o.total)+' in cash when you pick it up.'; $('doneActs').innerHTML=''; }

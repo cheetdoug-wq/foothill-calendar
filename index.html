@@ -2,8 +2,12 @@
 <html lang="en"><head><script>if(/^#week-\d/.test(location.hash))location.replace("alison/"+location.hash);</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cheet's Press</title>
 <meta name="description" content="Custom calendars that move. Printed and laminated by hand in the California foothills. Scan the code and your week comes alive.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+@font-face{font-family:"Bowlby One";src:url(/fonts/bowlby-one.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-600.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-700.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Figtree";src:url(/fonts/figtree-800.woff2) format("woff2");font-weight:800 900;font-display:swap}
 :root{ /* A print shop poster: deep grape paper, one loud orange ink, chunky press type. Layout: poster hero with a live scene, three steps, then the order builder (form left, live preview right). */
   --grape:#1c0e33; --plum:#2b1650; --line:#4b2f7d; --ink:#fbf4ff; --muted:#c6b4e6; --orange:#ff8a1f; --cream:#fff3df;
   --display:"Bowlby One","Arial Black",Impact,sans-serif; --body:"Figtree",system-ui,sans-serif; color-scheme:dark}
@@ -94,7 +98,10 @@ textarea{min-height:76px;resize:vertical}
 .soon{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
 .soon div{border:2px dashed var(--line);border-radius:18px;padding:18px;color:var(--muted)} .soon b{color:var(--ink);display:block;font-size:18px}
 footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);color:var(--muted);font-size:14px}
-.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.gal figure{margin:0}.gal img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 14px 30px rgba(0,0,0,.45);transform:rotate(-1deg)}.gal figure:nth-child(2) img{transform:rotate(1.2deg)}.gal figcaption{margin-top:10px;font-weight:700;font-size:14px;opacity:.85}@media (max-width:860px){.gal{grid-template-columns:1fr}}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.gal figure{margin:0}.gal img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 14px 30px rgba(0,0,0,.45);transform:rotate(-1deg)}.gal figure:nth-child(2) img{transform:rotate(1.2deg)}.gal figcaption{margin-top:10px;font-weight:700;font-size:14px;opacity:.85}.faq{display:grid;gap:10px}.faq details{background:var(--plum);border:2px solid var(--line);border-radius:14px;padding:12px 16px}.faq summary{cursor:pointer;font-weight:800;font-size:17px}.faq p{margin:8px 0 2px;color:var(--muted)}footer a{color:var(--muted)}
+.ck{position:fixed;left:12px;right:12px;bottom:12px;z-index:50;max-width:560px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;background:var(--cream);color:#24122e;border-radius:16px;padding:10px 12px 10px 16px;box-shadow:0 14px 40px rgba(0,0,0,.5);font-weight:600;font-size:14px}.ck a{color:#b04a00}.ck[hidden]{display:none}
+.btn{white-space:nowrap}@media (max-width:460px){header.bar .btn{padding:9px 14px;font-size:14px}}
+@media (max-width:860px){.gal{grid-template-columns:1fr}}
 @media (max-width:860px){.hero,.build{grid-template-columns:1fr}.steps,.soon{grid-template-columns:1fr}.demo{transform:none}.preview{position:static;order:-1}}
 @media (max-width:460px){.drow3{grid-template-columns:1fr 1fr 44px}.drow3 input{grid-column:1/3;grid-row:2}.cards,.two{grid-template-columns:1fr}.mchips{grid-template-columns:repeat(4,1fr)}}
 @media (prefers-reduced-motion:reduce){.runner{animation:none}html{scroll-behavior:auto}}
@@ -164,7 +171,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   </div>
 </section>
 
-<section id="made"><h2>Real ones we've made</h2><p class="lede" style="margin:0 0 14px">Printed and laminated here, photographed on the kitchen table. The front has the month and a picture for every week. The back has a QR code for each week and what to do on the special days.</p>
+<section id="made"><h2>Real ones we've made</h2><p class="lede" style="margin:0 0 14px">Printed and laminated here, photographed on the kitchen table. Names and private dates are blurred. The front has the month and a picture for every week. The back has a QR code for each week and what to do on the special days.</p>
 <div class="gal">
   <figure><img src="img/nov.jpg" alt="Printed November calendar page with an autumn meadow banner and Cheet running past a fence" loading="lazy" width="1388" height="1100"><figcaption>Front · November</figcaption></figure>
   <figure><img src="img/dec.jpg" alt="Printed December calendar page with a snowy cabin, Christmas tree and owl banner" loading="lazy" width="1400" height="1066"><figcaption>Front · December</figcaption></figure>
@@ -212,7 +219,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
       <div class="two"><div><label for="buyer">Your name</label><input type="text" id="buyer" autocomplete="name"></div>
       <div><label for="contact">Your email</label><input type="email" id="contact" autocomplete="email" placeholder="you@example.com"></div></div>
       <label for="phone">Phone <span class="hint" style="display:inline">(optional)</span></label><input type="text" id="phone" autocomplete="tel" inputmode="tel">
-      <p class="hint">We email your order updates and a picture of your calendar to check before printing.</p>
+      <p class="hint">We email your order updates and a picture of your calendar to check before printing. We only use your info for your order. <a href="/privacy/">Privacy policy</a>.</p>
     </fieldset>
     <div class="sum">
       <div class="total"><span id="sumLine"></span><b id="total">$5.00</b></div><p class="hint" id="dealHint" style="margin:6px 0 0;color:var(--orange)"></p>
@@ -235,8 +242,17 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 </div>
 </section>
 
+<section id="faq"><h2>Questions</h2>
+<div class="faq">
+<details><summary>How long does it take?</summary><p>We email you a picture of your calendar within 3 days after your payment comes in. Once you say it looks good, we print and laminate it in 1 to 2 days. Mailed calendars take 1 to 5 business days to arrive.</p></details>
+<details><summary>What if I want something changed?</summary><p>Reply to the picture we email you with what to change. One round of changes is free. We print only after you say it looks good.</p></details>
+<details><summary>Can I get a refund?</summary><p>Yes, a full refund any time before we start designing. After that, if something is our mistake (a wrong date, a misspelled name, damage in the mail) we fix it or reprint it for free. Full details are in our <a href="/terms/">terms</a>.</p></details>
+<details><summary>Who can see the moving pictures?</summary><p>Each calendar gets its own web pages for the animations. They are not listed anywhere or searchable, but anyone who has the link or scans the QR code can open them. If you want names or birthdays left off the online pages, tell us in your order.</p></details>
+<details><summary>How do I pay?</summary><p>On Venmo to @jake-douglas-44, or cash if you pick up. Venmo opens with the amount and your order number already filled in.</p></details>
+<details><summary>Do you use cookies or track me?</summary><p>No. No cookies, no ads, no trackers. Read our <a href="/privacy/">privacy policy</a>.</p></details>
+</div></section>
 <section><h2>More is coming</h2><p class="lede" style="margin:0">Calendars are first. More printed and laminated things that move are on the way.</p></section>
-<footer>Cheet's Press. Printed and laminated by hand in the California foothills. Named after Cheet, a small black chihuahua with big ears.</footer>
+<footer>Cheet's Press. Printed and laminated by hand in the California foothills. Named after Cheet, a small black chihuahua with big ears.<br><a href="/privacy/">Privacy policy</a> · <a href="/terms/">Terms of sale</a> · <a href="mailto:cheetspress@gmail.com">cheetspress@gmail.com</a> · No cookies, no trackers.</footer>
 </div>
 <script>/* Alison's Foothill Calendar: scene engine + calendar data */
 (function (root) {
@@ -612,9 +628,20 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
     var o={ forName:$('forName').value.trim(), months:P.length===12?'Full year ('+label(P[0])+' to '+label(P[11])+')':P.map(label).join(', '), n:P.length,
       design:describing()?'You describe them':'We make them', delivery:mail?'Mailed':'Pickup or drop-off', addr:mail?$('addr').value.trim():'',
       price:st.total, ship:ship, total:st.total+ship, name:$('buyer').value.trim(), email:em, phone:$('phone').value.trim(), details:orderText() };
-    try{ sessionStorage.setItem('cpOrder', JSON.stringify(o)); }catch(err){}
+    try{ sessionStorage.setItem('cpOrder', JSON.stringify(o)); sessionStorage.setItem('cpForm', JSON.stringify(snap())); }catch(err){}
     location.href='checkout/#o='+encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(o)))));
   });
+  function snap(){ var v={}; ['forName','buyer','contact','phone','addr'].forEach(function(k){ v[k]=$(k).value; });
+    ['modeDesc','datesYes','delMail','alsoFun'].forEach(function(k){ v[k]=$(k).checked; });
+    return {v:v, on:months.map(function(c){return c.on;}), desc:months.map(function(c){return c.desc;}), dates:st.dates}; }
+  function restore(){ var x=null; try{ x=JSON.parse(sessionStorage.getItem('cpForm')); }catch(e){} if(!x) return;
+    try{ for(var k in x.v){ var el=$(k); if(!el) continue; if(typeof x.v[k]==='boolean'){ if(x.v[k]) el.checked=true; else if(k==='modeDesc') $('modeMake').checked=true; else if(k==='datesYes') $('datesNo').checked=true; else if(k==='delMail') $('delPickup').checked=true; else el.checked=false; } else el.value=x.v[k]; }
+      if(x.on && x.on.some(Boolean)) months.forEach(function(c,i){ c.on=!!x.on[i]; c.desc=(x.desc&&x.desc[i])||''; });
+      if(x.dates && x.dates.length) st.dates=x.dates; st.act=months.findIndex(function(c){return c.on;}); if(st.act<0) st.act=0;
+    }catch(e){} }
+  restore();
   all();
 })();
-</script></body></html>
+</script><div id="ck" class="ck" hidden role="region" aria-label="Cookie notice"><span>We don't use cookies, ads, or trackers. <a href="/privacy/">Privacy policy</a></span><button type="button" class="btn sm" id="ckOk">Got it</button></div>
+<script>(function(){var b=document.getElementById('ck');try{if(localStorage.getItem('ckOk'))return;}catch(e){}b.hidden=false;document.getElementById('ckOk').onclick=function(){b.hidden=true;try{localStorage.setItem('ckOk','1');}catch(e){}};})();</script>
+</body></html>
