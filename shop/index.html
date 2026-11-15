@@ -63,6 +63,16 @@ textarea{min-height:76px;resize:vertical}
 .srow{display:grid;grid-template-columns:86px 1fr;gap:8px;align-items:center;margin-top:8px}
 .srow span{font-weight:700;color:var(--muted)}
 [hidden]{display:none!important}
+.mchips{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+.mchip{font:800 14px var(--body);border:2px solid var(--line);border-radius:12px;padding:10px 4px;background:var(--grape);color:var(--ink);cursor:pointer}
+.mchip[aria-pressed=true]{background:var(--orange);border-color:var(--orange);color:#2a1300}
+.mchip:focus-visible{outline:3px solid var(--cream);outline-offset:2px}
+.macts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn.sm{padding:9px 16px;font-size:14px}
+.mcard{border:2px solid var(--line);border-radius:14px;padding:14px;background:var(--grape);margin-top:12px}
+.mhead{display:flex;justify-content:space-between;align-items:baseline}.mhead b{font-size:18px}.mhead .p{font-family:var(--display);color:var(--orange);font-size:20px}
+.sum h3{font-family:var(--display);font-weight:400;font-size:24px;margin:0 0 6px;color:var(--orange)}.sum p{margin:0 0 4px}
+#send{margin-top:0}
 .preview{position:sticky;top:14px;background:var(--cream);color:#24122e;border-radius:20px;padding:14px;box-shadow:0 22px 50px rgba(0,0,0,.45)}
 .ptitle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:10px 2px 6px}
 .ptitle b{font-family:var(--display);font-weight:400;font-size:24px}.ptitle span{font-weight:700;color:#7a4a12;font-size:14px;text-align:right}
@@ -79,12 +89,12 @@ textarea{min-height:76px;resize:vertical}
 .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 #msg{font-weight:700;margin:12px 0 0;min-height:1.4em}
 #msg.bad{color:#ffb4a8} #msg.ok{color:#b8f5b0}
-#orderText{margin-top:12px;min-height:170px;font:600 13px ui-monospace,Menlo,monospace}
+#orderText{margin-top:12px;min-height:220px;font:600 13px ui-monospace,Menlo,monospace}
 .soon{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
 .soon div{border:2px dashed var(--line);border-radius:18px;padding:18px;color:var(--muted)} .soon b{color:var(--ink);display:block;font-size:18px}
 footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);color:var(--muted);font-size:14px}
 @media (max-width:860px){.hero,.build{grid-template-columns:1fr}.steps,.soon{grid-template-columns:1fr}.demo{transform:none}.preview{position:static;order:-1}}
-@media (max-width:460px){.cards,.two{grid-template-columns:1fr}}
+@media (max-width:460px){.cards,.two{grid-template-columns:1fr}.mchips{grid-template-columns:repeat(4,1fr)}}
 @media (prefers-reduced-motion:reduce){.runner{animation:none}html{scroll-behavior:auto}}
 
 .scene{display:block;width:100%;height:100%}
@@ -138,7 +148,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   <div>
     <h1>Calendars <em>that</em> move.</h1>
     <p class="lede">A custom calendar page, <b>printed and laminated by hand</b> in the California foothills. Every week has its own picture and a QR code. Scan it and that week comes alive on your phone.</p>
-    <div class="cta"><a class="btn" href="#build">Build yours</a><span class="price">$5.00 a month page · custom $5.50</span></div>
+    <div class="cta"><a class="btn" href="#build">Build yours</a><span class="price">$5.00 a month · $5.50 if you describe it · one month or a full year</span></div>
   </div>
   <div class="demo"><div class="stage" id="demo"></div><div class="chips" id="chips" role="group" aria-label="Pick a scene to watch"></div></div>
 </div>
@@ -146,7 +156,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 
 <section><h2>How it works</h2>
   <div class="steps">
-    <div class="step"><b>Tell us who it's for</b><p>A name, a month, and the birthdays and days that matter. Or let us make up fun days for you.</p></div>
+    <div class="step"><b>Tell us who it's for</b><p>A name, one month or a whole year, and the birthdays and days that matter. Describe each month or let us make them up.</p></div>
     <div class="step"><b>We make the page</b><p>A real calendar with a scene for every week, printed in color and laminated.</p></div>
     <div class="step"><b>Scan and watch</b><p>Each week has a QR code on the back. Point a phone at it and the picture starts moving.</p></div>
   </div>
@@ -155,29 +165,21 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 <section id="build"><h2>Build your calendar</h2><p class="lede" style="margin:0">The preview updates as you fill this in.</p>
 <div class="build">
   <form id="f" novalidate>
-    <fieldset><legend>1. Who and when</legend>
-      <div class="two"><div><label for="forName">Calendar is for</label><input type="text" id="forName" placeholder="Their name" autocomplete="off"></div>
-      <div><label for="month">Month</label><select id="month"></select></div></div>
+    <fieldset><legend>1. Who and which months</legend>
+      <label for="forName">Calendar is for</label><input type="text" id="forName" placeholder="Their name" autocomplete="off">
+      <label id="mlab">Months</label>
+      <div class="mchips" id="mchips" role="group" aria-labelledby="mlab"></div>
+      <div class="macts"><button type="button" class="btn ghost sm" id="fullYear">Pick the full year</button><button type="button" class="btn ghost sm" id="clearM">Just one month</button></div>
+      <p class="hint">Pick one month, a few, or all 12. Each month is its own page.</p>
     </fieldset>
-    <fieldset><legend>2. How custom</legend>
-      <div class="cards">
-        <label class="card"><input type="radio" name="mode" id="modeSurprise" value="surprise" checked><span class="p">$5.00</span><b>Surprise me</b><span>We make up the fun days and pick the scenes.</span></label>
-        <label class="card"><input type="radio" name="mode" id="modeCustom" value="custom"><span class="p">$5.50</span><b>Make it custom</b><span>Your own dates, your pick of scenes, or a new scene idea.</span></label>
-      </div>
-      <div id="customBox" hidden>
-        <label>Your dates</label>
-        <div id="dates"></div>
-        <button type="button" class="btn ghost" id="addDate" style="margin-top:10px;padding:9px 16px;font-size:14px">Add a date</button>
-        <label style="margin-top:16px"><input type="checkbox" id="alsoFun" checked> Also add made-up fun days</label>
-        <label>Scene for each week</label>
-        <div id="scenes"></div>
-        <label for="newScene">Want a brand-new scene? Describe it</label>
-        <textarea id="newScene" placeholder="Optional. Like: our cabin by the lake with two cats on the porch."></textarea>
-      </div>
+    <fieldset><legend>2. Each month</legend>
+      <p class="hint" style="margin-top:0">Leave a month blank and we make one for you: <b>$5.00</b>. Describe what you want and we design the month around it: <b>$5.50</b>. Adding dates is free either way.</p>
+      <div id="months"></div>
+      <label style="margin-top:16px"><input type="checkbox" id="alsoFun" checked> Add made-up fun days too</label>
     </fieldset>
     <fieldset><legend>3. How you get it</legend>
       <div class="cards">
-        <label class="card"><input type="radio" name="del" id="delPickup" value="pickup" checked><b>Local pickup or drop-off</b><span>Free, for people nearby.</span></label>
+        <label class="card"><input type="radio" name="del" id="delPickup" value="pickup" checked><b>Local pickup or drop-off</b><span>Free, for people nearby. You email us the order and pay when you get it.</span></label>
         <label class="card"><input type="radio" name="del" id="delMail" value="mail"><b>Mailed in the US</b><span>Shipping is extra. We tell you the cost before you pay.</span></label>
       </div>
       <div id="addrBox" hidden><label for="addr">Mailing address</label><textarea id="addr" autocomplete="street-address"></textarea></div>
@@ -187,16 +189,22 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
       <div><label for="contact">Email or phone</label><input type="text" id="contact" autocomplete="email"></div></div>
     </fieldset>
     <div class="sum">
-      <div class="total"><span id="sumLine">Surprise calendar</span><b id="total">$5.00</b></div>
+      <div class="total"><span id="sumLine"></span><b id="total">$5.00</b></div>
       <div class="acts"><button type="submit" class="btn" id="finish">Finish my order</button><span id="payWrap"></span></div>
       <p id="msg" role="status"></p>
-      <textarea id="orderText" readonly hidden aria-label="Your order"></textarea>
       <p class="hint" id="payHint"></p>
+    </div>
+    <div class="sum" id="send" hidden tabindex="-1">
+      <h3 id="sendTitle">Email us your order</h3>
+      <p id="sendText"></p>
+      <div class="acts" id="sendActs"></div>
+      <p id="copyMsg" role="status" class="hint"></p>
+      <textarea id="orderText" readonly aria-label="Your order"></textarea>
     </div>
   </form>
   <aside class="preview" aria-label="Calendar preview">
     <div class="stage" id="pstage"></div>
-    <div class="ptitle"><b id="pName">Their name</b><span id="pMonth"></span></div>
+    <div class="chips" id="ptabs" role="group" aria-label="Month to preview"></div><div class="ptitle"><b id="pName">Their name</b><span id="pMonth"></span></div>
     <div class="grid" id="pgrid"></div>
     <p class="pnote" id="pnote"></p>
   </aside>
@@ -482,7 +490,7 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
 <script>
 (function(){
   /* ---- shop settings: fill these in when they exist ---- */
-  var SHOP = { stripeBase: '', stripeCustom: '', orderEmail: '' };
+  var SHOP = { stripe: '', orderEmail: '' };
 
   var $ = function(i){ return document.getElementById(i); };
   var SCENES = ['Autumn oaks and zoomies','Golden hour turkeys','Sunset hawk over the river','Frosty morning deer','Otter under the stars','Snowy solstice','Full moon, owl and cabin','Fireworks and a fox'];
@@ -500,80 +508,95 @@ footer{margin:60px 0 0;padding:24px 0 40px;border-top:2px solid var(--line);colo
   /* running Cheet under the hero: reuse the scene's Cheet by rendering one scene off-screen and lifting her out */
   (function(){ var t=document.createElement('div'); t.innerHTML=CAL.scene(0,{uid:'r'}); var g=t.querySelector('.pace'); if(g){ g.classList.remove('pace'); g.removeAttribute('style'); $('runner').appendChild(g); } })();
 
-  /* months: this month and the next 11 */
+  /* months: the next 12 */
   var now = new Date(), months = [];
-  for (var k=1;k<=12;k++){ var d=new Date(now.getFullYear(), now.getMonth()+k, 1); months.push({y:d.getFullYear(), m:d.getMonth()}); }
-  $('month').innerHTML = months.map(function(x,i){ return '<option value="'+i+'">'+MON[x.m]+' '+x.y+'</option>'; }).join('');
+  for (var k=1;k<=12;k++){ var d=new Date(now.getFullYear(), now.getMonth()+k, 1); months.push({y:d.getFullYear(), m:d.getMonth(), on:k===1, desc:'', dates:[]}); }
+  var st = { act:0, week:0 }, shown=-1;
+  function picked(){ return months.filter(function(x){return x.on;}); }
+  function nd(c){ return new Date(c.y,c.m+1,0).getDate(); }
+  function label(c){ return MON[c.m]+' '+c.y; }
+  function price(c){ return c.desc.trim()?5.5:5; }
+  function money(n){ return '$'+n.toFixed(2); }
+  function autoScene(c,r){ var m=c.m, cold=(m===11||m<=1), fall=(m>=8&&m<=10); var set = cold?[3,4,5,6,7]:fall?[0,1,2,0,1]:[0,3,4,1,2]; return set[r%5]; }
 
-  var st = { dates:[{d:'',t:''}], scenes:[], week:0 };
-  function cur(){ return months[+$('month').value]; }
-  function ndays(){ var c=cur(); return new Date(c.y,c.m+1,0).getDate(); }
-  function nweeks(){ return Math.ceil(ndays()/7); }
-  function custom(){ return $('modeCustom').checked; }
-  function autoScene(r){ var m=cur().m, cold=(m===11||m<=1), fall=(m>=8&&m<=10); var set = cold?[3,4,5,6,7]:fall?[0,1,2,0,1]:[0,3,4,1,2]; return set[r%5]; }
-  function sceneFor(r){ var v=st.scenes[r]; return (custom() && v!==undefined && v!=='') ? +v : autoScene(r); }
-
-  function drawDates(){
-    var n=ndays(), opts='<option value="">Day</option>'; for(var i=1;i<=n;i++) opts+='<option>'+i+'</option>';
-    $('dates').innerHTML = st.dates.map(function(x,i){ return '<div class="drow"><select id="dd'+i+'" data-i="'+i+'" aria-label="Day of the month">'+opts+'</select><input type="text" id="dt'+i+'" data-i="'+i+'" placeholder="Like: Grandma\'s birthday" aria-label="What is this day" value="'+esc(x.t)+'"><button type="button" class="x" data-i="'+i+'" aria-label="Remove this date">×</button></div>'; }).join('');
-    st.dates.forEach(function(x,i){ if(+x.d>n) x.d=''; $('dd'+i).value=x.d; });
+  function drawChips(){ $('mchips').innerHTML = months.map(function(c,i){ return '<button type="button" class="mchip" data-i="'+i+'" aria-pressed="'+c.on+'">'+MON[c.m].slice(0,3)+' '+String(c.y).slice(2)+'</button>'; }).join(''); }
+  function drawMonths(){
+    $('months').innerHTML = months.map(function(c,i){ if(!c.on) return '';
+      var n=nd(c), opts='<option value="">Day</option>'; for(var q=1;q<=n;q++) opts+='<option>'+q+'</option>';
+      var rows=c.dates.map(function(x,j){ return '<div class="drow"><select data-k="dd" data-i="'+i+'" data-j="'+j+'" id="dd'+i+'_'+j+'" aria-label="Day in '+label(c)+'">'+opts+'</select><input type="text" data-k="dt" data-i="'+i+'" data-j="'+j+'" id="dt'+i+'_'+j+'" placeholder="Like: Grandma\'s birthday" aria-label="What is this day" value="'+esc(x.t)+'"><button type="button" class="x" data-i="'+i+'" data-j="'+j+'" aria-label="Remove this date">×</button></div>'; }).join('');
+      return '<div class="mcard"><div class="mhead"><b>'+label(c)+'</b><span class="p" id="pr'+i+'">'+money(price(c))+'</span></div>'
+        +'<label for="ds'+i+'">Describe this month (optional)</label><textarea data-k="ds" data-i="'+i+'" id="ds'+i+'" placeholder="Like: snowy cabin with our two cats, lots of birthdays this month.">'+esc(c.desc)+'</textarea>'
+        +rows+'<button type="button" class="btn ghost sm add" data-i="'+i+'" style="margin-top:10px">Add a date</button></div>'; }).join('');
+    months.forEach(function(c,i){ c.dates.forEach(function(x,j){ var el=$('dd'+i+'_'+j); if(el) el.value=x.d; }); });
   }
-  function drawScenes(){
-    var h=''; for(var r=0;r<nweeks();r++){ var o='<option value="">Surprise me</option>'+SCENES.map(function(n,i){return '<option value="'+i+'">'+esc(n)+'</option>';}).join('');
-      h+='<div class="srow"><span>Week '+(r+1)+'</span><select id="sc'+r+'" data-r="'+r+'" aria-label="Scene for week '+(r+1)+'">'+o+'</select></div>'; }
-    $('scenes').innerHTML=h; for(r=0;r<nweeks();r++){ if(st.scenes[r]!==undefined) $('sc'+r).value=st.scenes[r]; }
-  }
-  var shown=-1;
   function drawPreview(force){
-    var c=cur(), n=ndays(), first=new Date(c.y,c.m,1).getDay(), W=nweeks(); if(st.week>=W) st.week=0;
-    var marks={}; if(!custom() || $('alsoFun').checked){ for(var k in FUN) marks[k]=FUN[k]; }
-    if(custom()) st.dates.forEach(function(x){ if(x.d && x.t.trim()) marks[x.d]=x.t.trim(); else if(x.d) marks[x.d]=marks[x.d]||'Your day'; });
+    var P=picked(); if(!months[st.act].on) { st.act=months.indexOf(P[0]); st.week=0; }
+    var c=months[st.act], n=nd(c), first=new Date(c.y,c.m,1).getDay(), W=Math.ceil(n/7); if(st.week>=W) st.week=0;
+    var marks={}; if($('alsoFun').checked){ for(var k in FUN) marks[k]=FUN[k]; }
+    c.dates.forEach(function(x){ if(x.d) marks[x.d]=x.t.trim()||'Your day'; });
+    $('ptabs').innerHTML = P.length>1 ? P.map(function(x){ var i=months.indexOf(x); return '<button type="button" class="chip" data-i="'+i+'" aria-pressed="'+(i===st.act)+'">'+MON[x.m].slice(0,3)+'</button>'; }).join('') : '';
     var h=''; for(var r=0;r<W;r++){ h+='<button type="button" class="wk" data-r="'+r+'" aria-pressed="'+(r===st.week)+'" aria-label="Show week '+(r+1)+'">';
       for(var j=0;j<7;j++){ var day=r*7+j+1; if(day>n){ h+='<span class="c no"></span>'; continue; }
         h+='<span class="c'+(marks[day]?' on':'')+'">'+DOW[(first+j)%7]+' '+day+(marks[day]?'<small>'+esc(marks[day])+'</small>':'')+'</span>'; }
       h+='</button>'; }
     $('pgrid').innerHTML=h;
-    $('pName').textContent=$('forName').value.trim()||'Their name'; $('pMonth').textContent=MON[c.m]+' '+c.y+' · week '+(st.week+1)+': '+SCENES[sceneFor(st.week)];
-    var key=sceneFor(st.week); if(force||key!==shown){ shown=key; $('pstage').innerHTML=CAL.scene(key,{par:'xMidYMid slice',uid:'p'}); }
-    $('pnote').textContent = custom() ? 'Tap a week to see its scene. Every row is 7 days starting on the 1st.' : 'These fun days are examples. Yours get made up fresh. Tap a week to see its scene.';
-    $('sumLine').textContent = custom()?'Custom calendar':'Surprise calendar'; $('total').textContent = custom()?'$5.50':'$5.00';
-    $('customBox').hidden=!custom(); $('addrBox').hidden=!$('delMail').checked;
-    var link = custom()?SHOP.stripeCustom:SHOP.stripeBase;
-    $('payWrap').innerHTML = link ? '<a class="btn ghost" href="'+esc(link)+'">Pay with card</a>' : '<span class="btn off" aria-disabled="true">Card payments open soon</span>';
-    $('payHint').textContent = link ? 'Finish your order first, then pay with card. Stripe handles the payment.' : 'Online card payment is being set up. For now you pay when you get your calendar.';
+    var key=autoScene(c,st.week);
+    $('pName').textContent=$('forName').value.trim()||'Their name'; $('pMonth').textContent=label(c)+' · week '+(st.week+1);
+    if(force||key!==shown){ shown=key; $('pstage').innerHTML=CAL.scene(key,{par:'xMidYMid slice',uid:'p'}); }
+    $('pnote').textContent = (c.desc.trim() ? 'You described this month, so its scenes get designed around that. This picture is a stand-in. ' : 'Example scenes and fun days. Yours get made fresh. ') + 'Tap a week to see its scene.';
+    var tot=0, desc=0; P.forEach(function(x){ tot+=price(x); if(x.desc.trim()) desc++; });
+    $('sumLine').textContent = (P.length===12?'Full year, 12 months':P.length+(P.length===1?' month':' months'))+(desc?' ('+desc+' described)':'');
+    $('total').textContent = money(tot); st.total=tot;
+    $('addrBox').hidden=!$('delMail').checked;
+    $('payWrap').innerHTML = SHOP.stripe ? '' : '<span class="btn off" aria-disabled="true">Card payments open soon</span>';
+    $('payHint').textContent = 'Online card payment is being set up. For now you pay when you get your calendar.';
   }
-  function all(){ drawDates(); drawScenes(); drawPreview(true); }
+  function all(){ drawChips(); drawMonths(); drawPreview(true); }
 
-  $('f').addEventListener('input', function(e){ var t=e.target, i=t.dataset.i;
-    if(t.id&&t.id.indexOf('dd')===0) st.dates[i].d=t.value; else if(t.id&&t.id.indexOf('dt')===0) st.dates[i].t=t.value; else if(t.id&&t.id.indexOf('sc')===0){ st.scenes[t.dataset.r]=t.value; st.week=+t.dataset.r; }
-    if(t.id==='month'){ all(); return; } drawPreview(); });
-  $('f').addEventListener('click', function(e){ var x=e.target.closest('.x'); if(x){ st.dates.splice(+x.dataset.i,1); if(!st.dates.length) st.dates.push({d:'',t:''}); drawDates(); drawPreview(); } });
-  $('addDate').addEventListener('click', function(){ st.dates.push({d:'',t:''}); drawDates(); $('dd'+(st.dates.length-1)).focus(); });
+  $('mchips').addEventListener('click', function(e){ var b=e.target.closest('.mchip'); if(!b) return; var c=months[+b.dataset.i];
+    if(c.on && picked().length===1) return; c.on=!c.on; if(c.on){ st.act=+b.dataset.i; st.week=0; } all(); });
+  $('fullYear').addEventListener('click', function(){ months.forEach(function(c){c.on=true;}); all(); });
+  $('clearM').addEventListener('click', function(){ months.forEach(function(c,i){c.on=(i===st.act);}); all(); });
+  $('f').addEventListener('input', function(e){ var t=e.target, k=t.dataset.k, c=months[t.dataset.i];
+    if(k==='ds'){ c.desc=t.value; $('pr'+t.dataset.i).textContent=money(price(c)); st.act=+t.dataset.i; }
+    else if(k==='dd'){ c.dates[t.dataset.j].d=t.value; st.act=+t.dataset.i; if(t.value) st.week=Math.floor((+t.value-1)/7); }
+    else if(k==='dt'){ c.dates[t.dataset.j].t=t.value; st.act=+t.dataset.i; }
+    drawPreview(); });
+  $('months').addEventListener('click', function(e){ var x=e.target.closest('.x'), a=e.target.closest('.add');
+    if(x){ months[x.dataset.i].dates.splice(+x.dataset.j,1); drawMonths(); drawPreview(); }
+    if(a){ var c=months[a.dataset.i]; c.dates.push({d:'',t:''}); drawMonths(); $('dd'+a.dataset.i+'_'+(c.dates.length-1)).focus(); } });
   $('pgrid').addEventListener('click', function(e){ var b=e.target.closest('.wk'); if(b){ st.week=+b.dataset.r; drawPreview(); } });
+  $('ptabs').addEventListener('click', function(e){ var b=e.target.closest('.chip'); if(b){ st.act=+b.dataset.i; st.week=0; drawPreview(); } });
 
   function orderText(){
-    var c=cur(), L=["CHEET'S PRESS ORDER", 'Calendar for: '+$('forName').value.trim(), 'Month: '+MON[c.m]+' '+c.y, 'Type: '+(custom()?'Custom ($5.50)':'Surprise me ($5.00)')];
-    if(custom()){
-      var ds=st.dates.filter(function(x){return x.d;}).map(function(x){return MON[c.m].slice(0,3)+' '+x.d+': '+(x.t.trim()||'(no label)');});
-      L.push('Dates: '+(ds.length?ds.join('; '):'none given')); L.push('Made-up fun days too: '+($('alsoFun').checked?'yes':'no'));
-      var sc=[]; for(var r=0;r<nweeks();r++){ var v=st.scenes[r]; sc.push('week '+(r+1)+' '+((v===undefined||v==='')?'surprise me':SCENES[+v])); } L.push('Scenes: '+sc.join('; '));
-      if($('newScene').value.trim()) L.push('New scene idea: '+$('newScene').value.trim());
-    }
-    L.push('Delivery: '+($('delMail').checked?'Mail to: '+$('addr').value.trim().replace(/\n/g,', '):'Local pickup or drop-off'));
+    var P=picked(), L=["CHEET'S PRESS ORDER", 'Calendar for: '+$('forName').value.trim(), 'Months: '+(P.length===12?'Full year ('+label(P[0])+' to '+label(P[11])+')':P.length), 'Made-up fun days: '+($('alsoFun').checked?'yes':'no'), ''];
+    P.forEach(function(c){ L.push(label(c)+' ('+money(price(c))+')'); L.push('  Describe: '+(c.desc.trim()||'make one for me'));
+      var ds=c.dates.filter(function(x){return x.d;}).map(function(x){return x.d+': '+(x.t.trim()||'(no label)');}); L.push('  Dates: '+(ds.length?ds.join('; '):'none')); });
+    L.push(''); L.push('Delivery: '+($('delMail').checked?'Mail to: '+$('addr').value.trim().replace(/\n/g,', '):'Local pickup or drop-off'));
     L.push('From: '+$('buyer').value.trim()+' ('+$('contact').value.trim()+')');
-    L.push('Total: '+(custom()?'$5.50':'$5.00')+($('delMail').checked?' plus shipping':''));
+    L.push('Total: '+money(st.total)+($('delMail').checked?' plus shipping':''));
     return L.join('\n');
   }
   $('f').addEventListener('submit', function(e){ e.preventDefault(); var m=$('msg'), miss=[];
     if(!$('forName').value.trim()) miss.push('who the calendar is for'); if(!$('buyer').value.trim()) miss.push('your name'); if(!$('contact').value.trim()) miss.push('your email or phone');
     if($('delMail').checked && !$('addr').value.trim()) miss.push('a mailing address');
-    if(miss.length){ m.className='bad'; m.textContent='Still needed: '+miss.join(', ')+'.'; return; }
-    var t=orderText(), box=$('orderText'); box.hidden=false; box.value=t; box.focus(); box.select();
-    function done(copied){ m.className='ok';
-      if(SHOP.orderEmail) m.innerHTML=(copied?'Order copied. ':'')+'Email it to <b>'+esc(SHOP.orderEmail)+'</b> or <a href="mailto:'+esc(SHOP.orderEmail)+'?subject='+encodeURIComponent("Cheet's Press order")+'&body='+encodeURIComponent(t)+'">open it in your mail app</a>. Your order is not placed until we get that email.';
-      else m.textContent=(copied?'Order copied. ':'Your order is below. Copy it. ')+'Online ordering is still being set up, so send this to Cheet\'s Press to place it.'; }
-    try{ navigator.clipboard.writeText(t).then(function(){done(true);},function(){done(false);}); }catch(err){ done(false); }
+    if(miss.length){ m.className='bad'; m.textContent='Still needed: '+miss.join(', ')+'.'; $('send').hidden=true; return; }
+    m.className=''; m.textContent='';
+    var t=orderText(), local=$('delPickup').checked; $('orderText').value=t; $('copyMsg').textContent='';
+    if(SHOP.orderEmail){
+      $('sendTitle').textContent='Last step: email us your order';
+      $('sendText').innerHTML='Send the order below to <b>'+esc(SHOP.orderEmail)+'</b>. '+(local?'We will write back to set up pickup or drop-off, and you pay when you get it.':'We will write back with the shipping cost before you pay.')+' Your order is not placed until we get your email.';
+      $('sendActs').innerHTML='<a class="btn" href="mailto:'+esc(SHOP.orderEmail)+'?subject='+encodeURIComponent("Cheet's Press order for "+$('forName').value.trim())+'&body='+encodeURIComponent(t)+'">Open my email app</a><button type="button" class="btn ghost" id="copyBtn">Copy the order</button>';
+    } else {
+      $('sendTitle').textContent='Your order is written up';
+      $('sendText').textContent='Online ordering is still being set up, so this order has not been sent anywhere yet. Copy it and send it to Cheet\'s Press to place it.';
+      $('sendActs').innerHTML='<button type="button" class="btn" id="copyBtn">Copy the order</button>';
+    }
+    $('send').hidden=false; $('send').focus(); $('send').scrollIntoView({block:'start'});
   });
+  $('send').addEventListener('click', function(e){ if(!e.target.closest('#copyBtn')) return; var box=$('orderText'), c=$('copyMsg');
+    function no(){ box.focus(); box.select(); c.textContent='Select the order text and copy it.'; }
+    try{ navigator.clipboard.writeText(box.value).then(function(){ c.textContent='Copied.'; }, no); }catch(err){ no(); } });
   all();
 })();
 </script></body></html>
