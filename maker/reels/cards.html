@@ -12,35 +12,45 @@
 html,body{margin:0;padding:0;background:#fff}
 #sheet{width:816px;height:1056px;display:grid;grid-template-columns:repeat(2,408px);
   grid-template-rows:repeat(5,211.2px);background:#fff}
-.card{position:relative;box-sizing:border-box;padding:17px 18px;display:flex;align-items:center;gap:14px;
+.card{position:relative;box-sizing:border-box;padding:13px 15px;display:flex;flex-direction:column;
   font-family:"Figtree",system-ui,sans-serif;color:#000;overflow:hidden;
   border-right:1px dashed #c9c9c9;border-bottom:1px dashed #c9c9c9}
 .card:nth-child(2n){border-right:none}
 .card:nth-child(n+9){border-bottom:none}
-.l{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:0}
-.brand{display:flex;align-items:center;gap:7px;margin-bottom:7px}
-.brand svg{flex:0 0 auto;width:34px;height:30px;overflow:visible}
-.brand b{font:400 15.5px/1 "Bowlby One","Arial Black",sans-serif;letter-spacing:.4px}
-.l h2{margin:0;font:800 19px/1.05 "Figtree",sans-serif;letter-spacing:-.3px}
-.l .d{margin-top:4px;font:700 10.5px/1.3 "Figtree",sans-serif}
-.l .p{margin-top:6px;font:800 11px/1.2 "Figtree",sans-serif;border-top:1.4px solid #000;padding-top:5px;display:inline-block}
-.l .u{margin-top:6px;font:800 12.5px/1 "Figtree",sans-serif}
-.r{flex:0 0 auto;width:112px;text-align:center}
-.r svg{width:106px;height:106px;display:block;margin:0 auto}
-.r .o{margin-top:4px;font:800 12px/1 "Figtree",sans-serif}
-.r .c{margin-top:2px;font:800 9px/1.15 "Figtree",sans-serif;letter-spacing:.3px}
+.top{flex:1 1 auto;min-height:0;display:flex;gap:12px}
+.l{flex:1 1 auto;min-width:0}
+.brand{display:flex;align-items:center;gap:6px}
+.brand svg{flex:0 0 auto;width:30px;height:26px;overflow:visible}
+.brand b{font:400 13.5px/1 "Bowlby One","Arial Black",sans-serif;letter-spacing:.3px}
+.l h2{margin:3px 0 0;font:800 17px/1.05 "Figtree",sans-serif;letter-spacing:-.3px}
+ul{margin:5px 0 0;padding:0;list-style:none}
+li{position:relative;padding-left:11px;font:700 9.5px/1.32 "Figtree",sans-serif}
+li:before{content:"";position:absolute;left:0;top:4px;width:5px;height:5px;background:#000;border-radius:1px}
+.l .p{margin-top:5px;font:800 10.5px/1 "Figtree",sans-serif}
+.r{flex:0 0 auto;width:98px;text-align:center}
+.r svg{width:94px;height:94px;display:block;margin:0 auto}
+.r .u{margin-top:3px;font:800 9.5px/1.1 "Figtree",sans-serif}
+.deal{flex:0 0 auto;margin-top:8px;border:1.6px solid #000;border-radius:5px;padding:4px 6px;
+  display:flex;align-items:baseline;justify-content:center;gap:6px}
+.deal b{font:800 15px/1 "Figtree",sans-serif;letter-spacing:-.2px}
+.deal span{font:800 10.5px/1 "Figtree",sans-serif;letter-spacing:.2px}
 </style></head>
 <body><div id="sheet"></div>
 <script src="/src/scenes.js"></script>
 <script>
 var QR = '<svg viewBox="0 0 33 33" shape-rendering="crispEdges" role="img" aria-label="cheetspress.store"><rect width="33" height="33" fill="#fff"/><path stroke="#000" stroke-width="1" fill="none" d="M2 2.5h7m5 0h1m4 0h3m2 0h7m-29 1h1m5 0h1m4 0h3m1 0h1m2 0h1m3 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m3 0h2m5 0h1m2 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m8 0h1m2 0h3m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m3 0h2m1 0h1m2 0h1m5 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m1 0h1m1 0h8m1 0h1m2 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-19 1h1m1 0h1m1 0h4m1 0h1m-20 1h1m2 0h1m1 0h2m1 0h3m1 0h2m1 0h1m4 0h2m1 0h1m-24 1h1m6 0h1m1 0h3m1 0h5m2 0h1m1 0h1m2 0h1m2 0h1m-28 1h1m3 0h6m2 0h1m5 0h3m1 0h5m-28 1h1m2 0h2m2 0h2m1 0h1m2 0h1m1 0h2m1 0h1m2 0h1m1 0h1m2 0h2m-28 1h1m4 0h2m1 0h1m1 0h2m2 0h9m2 0h1m1 0h2m-29 1h1m1 0h2m1 0h1m6 0h1m2 0h1m3 0h1m-20 1h2m2 0h3m1 0h2m1 0h2m3 0h1m3 0h1m1 0h1m1 0h5m-29 1h1m4 0h1m1 0h2m1 0h1m2 0h1m2 0h3m3 0h1m2 0h1m1 0h1m-28 1h1m5 0h1m1 0h1m2 0h1m1 0h2m2 0h3m1 0h1m5 0h1m-27 1h2m1 0h1m2 0h6m1 0h5m3 0h2m1 0h1m2 0h1m-29 1h1m1 0h2m2 0h1m2 0h1m2 0h2m3 0h1m4 0h1m1 0h1m2 0h2m-27 1h2m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m1 0h3m1 0h4m2 0h2m-29 1h1m2 0h5m6 0h2m4 0h5m1 0h1m-19 1h1m1 0h2m1 0h1m3 0h1m2 0h1m3 0h1m1 0h3m-29 1h7m2 0h2m2 0h2m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m-28 1h1m5 0h1m1 0h1m4 0h1m1 0h2m1 0h1m1 0h1m3 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h1m2 0h1m1 0h2m2 0h5m2 0h2m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m4 0h1m2 0h6m-28 1h1m1 0h3m1 0h1m5 0h2m2 0h1m2 0h1m1 0h1m2 0h3m1 0h1m-29 1h1m5 0h1m2 0h1m2 0h10m2 0h1m2 0h1m-28 1h7m1 0h2m1 0h2m4 0h1m2 0h1m1 0h1m1 0h2m1 0h1"/></svg>';
-var CARD = '<div class="l">' +
+var CARD = '<div class="top"><div class="l">' +
   '<div class="brand"><svg class="ch" viewBox="-78 -104 206 118" aria-hidden="true"></svg><b>CHEET\'S PRESS</b></div>' +
   '<h2>Custom calendars.</h2>' +
-  '<div class="d">Your dates, your pictures. Every week has<br>a code you scan to watch it move.</div>' +
-  '<div class="p">Half year $8 &middot; Full year $12</div>' +
-  '<div class="u">cheetspress.store</div>' +
-  '</div><div class="r">' + QR + '<div class="o">15% OFF</div><div class="c">CODE FLYER15</div></div>';
+  '<ul>' +
+    '<li>Your birthdays and dates printed on it</li>' +
+    '<li>Your own scene on every page</li>' +
+    '<li>Scan a week &rarr; watch it animate</li>' +
+    '<li>Printed and laminated by hand</li>' +
+  '</ul>' +
+  '<div class="p">Half year $8 &nbsp;&middot;&nbsp; Full year $12</div>' +
+  '</div><div class="r">' + QR + '<div class="u">cheetspress.store</div></div></div>' +
+  '<div class="deal"><b>15% OFF</b><span>WITH CODE FLYER15</span></div>';
 var sheet = document.getElementById('sheet'), html = '';
 for (var i = 0; i < 10; i++) html += '<div class="card">' + CARD + '</div>';
 sheet.innerHTML = html;
