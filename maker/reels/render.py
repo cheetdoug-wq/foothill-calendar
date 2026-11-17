@@ -55,7 +55,7 @@ def render(pg, n, music=None):
     print(out, f'{frames} frames, {dur}s,', f'{len(cues)} sound effects,', 'music' if music else 'no music')
 
 if __name__ == '__main__':
-    which = [int(a) for a in sys.argv[1:] if a.isdigit()] or [1, 2, 3, 4, 5, 6, 7]
+    which = [int(a) for a in sys.argv[1:] if a.isdigit()] or [1, 2, 3, 4, 5, 6, 7, 8]
     music = next((a for a in sys.argv[1:] if not a.isdigit()), None)
     srv = serve()
     with sync_playwright() as p:

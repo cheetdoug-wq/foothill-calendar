@@ -13,7 +13,7 @@ html,body{margin:0;background:#000}
 .layer{position:absolute;inset:0;opacity:0}
 .layer .zoom{position:absolute;inset:0;transform-origin:50% 60%}
 .layer svg.scene{position:absolute;inset:0;width:100%;height:100%;display:block}
-.shade{position:absolute;left:0;right:0;top:0;height:300px;background:linear-gradient(#0008,#0000)}
+.shade{position:absolute;left:0;right:0;top:0;height:380px;background:linear-gradient(#000c,#0009 42%,#0000)}
 .shade.b{top:auto;bottom:0;height:340px;background:linear-gradient(#0000,#000a)}
 .cap{position:absolute;left:34px;right:34px;opacity:0}
 .cap.top{top:70px}.cap.bottom{bottom:150px}
@@ -26,6 +26,20 @@ html,body{margin:0;background:#000}
 .phone{position:absolute;left:50%;top:300px;width:300px;height:560px;margin-left:-150px;border-radius:38px;background:#0d0718;border:8px solid #0d0718;box-shadow:0 0 0 2px #5b3d93,0 30px 70px #000b;overflow:hidden;opacity:0}
 .phone .pg{position:absolute;left:0;top:0;width:1130px}
 .phone .beam{position:absolute;left:10px;right:10px;top:0;height:5px;border-radius:5px;background:#3dff8a;box-shadow:0 0 18px 4px #3dff8a}
+.cherry{background:radial-gradient(120% 82% at 50% 44%,#8e1327 0%,#5e0a18 58%,#3b060e 100%)}
+#stage.cb .cap h1 em{color:#ffb224}
+#stage.cb .end .logo b{color:#ffb224}
+#stage.cb .end .btn{background:#ffb224;box-shadow:0 6px 0 #8a5a00}
+#stage.cb .end .code{border-color:#ffb224}
+#stage.cb .end .code b{color:#ffb224}
+#stage.cb .end .paw g{fill:#ffd79a}
+#stage.cb .end .l2{color:#f0c9ce}
+.snap{position:absolute;left:50%;top:300px;width:400px;margin-left:-200px;background:#faf5f2;
+  padding:15px 15px 0;box-sizing:border-box;border-radius:3px;box-shadow:0 24px 54px #0009;opacity:0}
+.snap .pic{width:370px;height:350px;background:#ded2cc;overflow:hidden;position:relative;border-radius:2px}
+.snap .pic svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.snap .note{height:68px;display:flex;align-items:center;justify-content:center;
+  font:800 24px/1.1 "Figtree",sans-serif;color:#3b0a12;text-align:center}
 .obj{position:absolute;left:50%;top:238px;width:250px;height:250px;margin-left:-125px;opacity:0}
 .obj svg,.stamp svg{width:100%;height:100%;display:block}
 .stamp{position:absolute;left:50%;top:352px;width:156px;height:156px;margin-left:4px;opacity:0}
@@ -112,6 +126,19 @@ html,body{margin:0;background:#000}
       { t0: 7.6,  t1: 11.2, kind: 'gift', cap: ['Something made', 'just for them.'], obj: 'cal', verdict: 'yes', sub: 'Their people. Their dates. Their dog.' },
       { t0: 11.2, t1: 14.0, kind: 'phone', cap: ['Scan a week.', 'It moves.'] },
       { t0: 14.0, t1: 17.5, kind: 'end' } ] },
+    /* skit: trying to photograph your own dog */
+    8: { dur: 16.5, brand: 'cherry',
+      sfx: [[0.30,'pop'],[2.45,'tick'],[3.35,'thud',.75],[4.15,'tick'],[5.05,'thud',.75],
+            [5.85,'tick'],[6.75,'thud',.75],[7.55,'tick'],[8.55,'thud',.75],
+            [9.45,'whoosh',.8],[10.40,'sparkle'],[10.90,'chime',.7],[13.10,'whoosh',.7],[13.50,'jingle']],
+      segs: [
+      { t0: 0,    t1: 2.3,  kind: 'snap', cap: ['I tried to photograph', 'my own dog.'] },
+      { t0: 2.3,  t1: 4.0,  kind: 'snap', cap: ['Attempt', 'one.'],       pic: 'blur',  note: 'Blurry.' },
+      { t0: 4.0,  t1: 5.7,  kind: 'snap', cap: ['Attempt', 'two.'],       pic: 'gone',  note: 'She left.' },
+      { t0: 5.7,  t1: 7.4,  kind: 'snap', cap: ['Attempt', 'three.'],     pic: 'couch', note: 'Under the couch now.' },
+      { t0: 7.4,  t1: 9.3,  kind: 'snap', cap: ['Attempt', 'forty-seven.'], pic: 'lamp', note: 'This is a lamp.' },
+      { t0: 9.3,  t1: 13.0, kind: 'scene', idx: 0, cap: ['You don\'t need', 'a good photo.'], sub: 'Tell us about them. We draw it.', pos: 'top' },
+      { t0: 13.0, t1: 16.5, kind: 'end' } ] },
     /* ad: the gift */
     6: { dur: 16, segs: [
       { t0: 0,    t1: 3.0,  kind: 'cal',   cap: ['The gift nobody', 'else is giving.'], sub: 'A calendar made just for them.' },
@@ -121,16 +148,38 @@ html,body{margin:0;background:#000}
       { t0: 12.6, t1: 16,   kind: 'end' } ] }
   };
   var r = +(new URLSearchParams(location.search).get('r') || 1), R = REELS[r] || REELS[1], D = R.dur, F = 0.45;
+  if (R.brand === 'cherry') document.getElementById('stage').classList.add('cb');
   var stage = document.getElementById('stage'), css = '', n = 0;
   var OBJ = {
     candle: '<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="45" y="46" width="30" height="58" rx="5" fill="#f4e7cd"/><rect x="45" y="46" width="30" height="9" rx="4.5" fill="#ddc9a4"/><rect x="58.5" y="33" width="3" height="13" fill="#6b5b43"/><path d="M60 9C71 24 70 34 60 34 50 34 49 24 60 9Z" fill="#ff8a1f"/><path d="M60 18C66 26 65 32 60 32 55 32 54 26 60 18Z" fill="#ffd77a"/></svg>',
     socks: '<svg viewBox="0 0 120 120" aria-hidden="true"><g fill="#b9cdea"><path d="M26 26h22v34c0 9 5 11 11 15 10 7 8 21-4 23-10 1-17-5-20-13-3-8-9-11-9-23Z"/><path d="M60 26h22v34c0 9 5 11 11 15 10 7 8 21-4 23-10 1-17-5-20-13-3-8-9-11-9-23Z"/></g><rect x="26" y="26" width="22" height="9" fill="#8fa9cf"/><rect x="60" y="26" width="22" height="9" fill="#8fa9cf"/></svg>',
     giftcard: '<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="14" y="37" width="92" height="58" rx="8" fill="#6f58a6"/><rect x="14" y="54" width="92" height="13" fill="#4e3b7d"/><rect x="24" y="76" width="36" height="6" rx="3" fill="#c9b7ec"/><circle cx="88" cy="80" r="8" fill="#ff8a1f"/></svg>'
   };
+  var PIC = {
+    couch: '<svg viewBox="0 0 306 290" aria-hidden="true"><rect width="306" height="290" fill="#efe6e1"/>' +
+      '<rect x="0" y="206" width="306" height="84" fill="#cdbdb6"/>' +
+      '<rect x="34" y="96" width="238" height="86" rx="14" fill="#9c6b5e"/>' +
+      '<rect x="22" y="150" width="262" height="56" rx="12" fill="#b07d6e"/>' +
+      '<rect x="36" y="206" width="20" height="20" fill="#6b4a42"/><rect x="250" y="206" width="20" height="20" fill="#6b4a42"/>' +
+      '<rect x="56" y="206" width="194" height="18" fill="#2a1b18"/>' +
+      '<circle cx="140" cy="215" r="5" fill="#fff8e6"/><circle cx="168" cy="215" r="5" fill="#fff8e6"/>' +
+      '<circle cx="141" cy="215.5" r="2.2" fill="#2a1b18"/><circle cx="169" cy="215.5" r="2.2" fill="#2a1b18"/></svg>',
+    lamp: '<svg viewBox="0 0 306 290" aria-hidden="true"><rect width="306" height="290" fill="#efe6e1"/>' +
+      '<ellipse cx="153" cy="96" rx="104" ry="80" fill="#fff4d2" opacity=".75"/>' +
+      '<path d="M104 104 L124 44 H182 L202 104 Z" fill="#e0b25c"/>' +
+      '<rect x="148" y="104" width="10" height="130" fill="#7b6a5e"/>' +
+      '<ellipse cx="153" cy="240" rx="52" ry="13" fill="#5d5049"/>' +
+      '<rect x="0" y="246" width="306" height="44" fill="#cdbdb6"/></svg>'
+  };
   var STAMP = {
     no:  '<svg viewBox="0 0 100 100" role="img" aria-label="Rejected"><circle cx="50" cy="50" r="43" fill="none" stroke="#ff6257" stroke-width="9"/><path d="M33 33 67 67M67 33 33 67" stroke="#ff6257" stroke-width="11" stroke-linecap="round"/></svg>',
     yes: '<svg viewBox="0 0 100 100" role="img" aria-label="Approved"><circle cx="50" cy="50" r="43" fill="none" stroke="#48dd8b" stroke-width="9"/><path d="M29 52 44 68 72 33" fill="none" stroke="#48dd8b" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg>'
   };
+  function cheetBody(uid){
+    var tmp = document.createElement('div'); tmp.innerHTML = CAL.scene(0, { uid: uid });
+    var ch = tmp.querySelector('.pace'); ch.classList.remove('pace'); ch.removeAttribute('style');
+    return ch;
+  }
   function cheetSvg(uid){
     var tmp = document.createElement('div'); tmp.innerHTML = CAL.scene(0, { uid: uid });
     var ch = tmp.querySelector('.pace'); ch.classList.remove('pace'); ch.removeAttribute('style');
@@ -174,6 +223,50 @@ html,body{margin:0;background:#000}
       L = el('layer dark'); caption(L, g, g.sub);
       var c = el('cal', '<img src="/img/sample-jan.jpg" alt="">', L);
       anim(c, [[g.t0, 'opacity:0;transform:translateY(70px) rotate(-9deg) scale(.9)', OUT], [g.t0 + 1.1, 'opacity:1;transform:translateY(0) rotate(-4deg) scale(1)'], [g.t1 + F, 'opacity:1;transform:translateY(-10px) rotate(-3deg) scale(1.04)']]);
+    } else if (g.kind === 'snap') {
+      L = el('layer cherry');
+      if (g.cap) caption(L, g, g.sub);
+      if (g.pic) {
+        var sn = el('snap', '<div class="pic"></div><div class="note">' + esc(g.note) + '</div>', L);
+        var pic = sn.querySelector('.pic');
+        if (g.pic === 'blur') {
+          /* three smeared copies of her: the photo caught her mid-zoomie */
+          var bs = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          bs.setAttribute('viewBox', '0 0 306 290'); bs.setAttribute('aria-hidden', 'true');
+          bs.innerHTML = '<rect width="306" height="290" fill="#efe6e1"/><rect x="0" y="228" width="306" height="62" fill="#cdbdb6"/>';
+          [[-30, .16], [-15, .3], [0, .92]].forEach(function (o, k) {
+            var g2 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            g2.setAttribute('transform', 'translate(' + (176 + o[0]) + ',236) scale(1.25)');
+            g2.setAttribute('opacity', o[1]);
+            g2.appendChild(cheetBody('b' + i + k));
+            bs.appendChild(g2);
+          });
+          pic.appendChild(bs);
+        } else if (g.pic === 'gone') {
+          /* she is already leaving the frame: only her back half made it */
+          var gs = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          gs.setAttribute('viewBox', '0 0 306 290'); gs.setAttribute('aria-hidden', 'true');
+          gs.innerHTML = '<rect width="306" height="290" fill="#efe6e1"/><rect x="0" y="228" width="306" height="62" fill="#cdbdb6"/>' +
+            '<path d="M26 150 h58 M18 176 h44 M30 202 h52" stroke="#c3b4ad" stroke-width="7" stroke-linecap="round"/>';
+          var g3 = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          g3.setAttribute('transform', 'translate(300,238) scale(1.3)');
+          g3.appendChild(cheetBody('x' + i));
+          gs.appendChild(g3);
+          pic.appendChild(gs);
+        } else {
+          pic.innerHTML = PIC[g.pic];
+        }
+        var tilt = (i % 2 ? 2.4 : -2.8);
+        var t2 = tilt * 0.45;
+        anim(sn, [[g.t0 + .1, 'opacity:0;transform:translateY(44px) rotate(' + tilt + 'deg) scale(.88)', OUT],
+                  [g.t0 + .7, 'opacity:1;transform:translateY(0px) rotate(' + tilt + 'deg) scale(1)', 'linear'],
+                  [g.t1 + .2, 'opacity:1;transform:translateY(-16px) rotate(' + t2 + 'deg) scale(1.045)'],
+                  [g.t1 + .42, 'opacity:0;transform:translateY(-16px) rotate(' + t2 + 'deg) scale(1.045)']]);
+      } else {
+        /* the hook: a camera, and nothing worth photographing yet */
+        var cm = el('obj', '<svg viewBox="0 0 120 120" aria-hidden="true"><rect x="12" y="38" width="96" height="62" rx="10" fill="#faf5f2"/><rect x="40" y="26" width="30" height="14" rx="5" fill="#faf5f2"/><circle cx="60" cy="69" r="23" fill="#3b0a12"/><circle cx="60" cy="69" r="14" fill="#8e1327"/><circle cx="53" cy="62" r="5" fill="#faf5f2" opacity=".8"/><circle cx="92" cy="50" r="5" fill="#ffb224"/></svg>', L);
+        anim(cm, [[g.t0 + .25, 'opacity:0;transform:translateY(32px) scale(.78)', OUT], [g.t0 + .9, 'opacity:1;transform:translateY(0px) rotate(-3deg) scale(1)', 'linear'], [g.t1 + .2, 'opacity:1;transform:translateY(-10px) rotate(3deg) scale(1.07)'], [g.t1 + .4, 'opacity:0;transform:translateY(-10px) rotate(3deg) scale(1.07)']]);
+      }
     } else if (g.kind === 'gift') {
       L = el('layer dark');
       if (g.cap) caption(L, g, g.sub);
@@ -219,7 +312,7 @@ html,body{margin:0;background:#000}
       anim(p.querySelector('.pg'), [[g.t0, 'transform:translate(-36px,-130px)'], [g.t1 + F, 'transform:translate(-36px,-190px)']]);
       anim(p.querySelector('.beam'), [[g.t0 + 1.0, 'opacity:0;transform:translateY(40px)'], [g.t0 + 1.2, 'opacity:1;transform:translateY(40px)', 'ease-in-out'], [g.t0 + 2.4, 'opacity:1;transform:translateY(480px)', 'ease-in-out'], [g.t0 + 3.6, 'opacity:1;transform:translateY(40px)'], [g.t0 + 3.9, 'opacity:0;transform:translateY(40px)']]);
     } else {
-      L = el('layer dark end',
+      L = el('layer end ' + (R.brand === 'cherry' ? 'cherry' : 'dark'),
         '<svg class="paw" viewBox="0 0 74 74" aria-hidden="true"><g fill="#6fa8ff"><ellipse cx="37" cy="48" rx="17" ry="14"/><ellipse cx="13" cy="33" rx="7" ry="9"/><ellipse cx="28" cy="18" rx="7" ry="10"/><ellipse cx="47" cy="18" rx="7" ry="10"/><ellipse cx="62" cy="33" rx="7" ry="9"/></g></svg>' +
         '<div class="logo">Cheet\'s <b>Press</b></div>' +
         '<div class="l1">Custom calendars.<br>Every week has its own animation.</div>' +
